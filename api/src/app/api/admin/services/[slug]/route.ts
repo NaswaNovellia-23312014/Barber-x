@@ -34,3 +34,25 @@ if (!session) {
     }
 }
 
+// Fungsi: DELETE (Admin menghapus layanan)
+export async function DELETE(
+    request: Request,
+    { params }: { params: { id: string } }
+) {
+  // Cek Login
+    const session = await getAdminSession();
+    if (!session) {
+    return NextResponse.json({ message: 'Tidak Terautentikasi' }, { status: 401 });
+    }
+
+  // Jika aman, jalankan logika
+    try {
+    await prisma.service.delete({
+        where: { id: params.id },
+    });
+    return NextResponse.json({ message: 'Layanan berhasil dihapus' }, { status: 200 });
+    } catch (error) {
+    // Error ini bisa terjadi jika layanan masih dipakai di 'Booking'
+    return NextResponse.json({ message: 'Gagal menghapus layanan' }, { status: 500 });
+    }
+}
