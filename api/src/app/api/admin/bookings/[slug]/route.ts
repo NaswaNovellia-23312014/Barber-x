@@ -30,3 +30,25 @@ export async function PUT(
     return NextResponse.json({ message: 'Gagal update booking' }, { status: 500 });
     }
 }
+
+// Fungsi: DELETE (Admin menghapus/membatalkan booking)
+export async function DELETE(
+    request: Request,
+    { params }: { params: { id: string } }
+) {
+  // Cek Login
+    const session = await getAdminSession();
+    if (!session) {
+    return NextResponse.json({ message: 'Tidak Terautentikasi' }, { status: 401 });
+    }
+
+  // Jika aman, jalankan logika
+    try {
+    await prisma.booking.delete({
+        where: { id: params.id },
+    });
+    return NextResponse.json({ message: 'Booking berhasil dihapus' }, { status: 200 });
+    } catch (error) {
+    return NextResponse.json({ message: 'Gagal menghapus booking' }, { status: 500 });
+    }
+}
