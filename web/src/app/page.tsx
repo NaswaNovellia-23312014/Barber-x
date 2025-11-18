@@ -18,7 +18,11 @@ export default function Home() {
             Selamat Datang di Barber-X
           </h1>
 
+          <p className="mt-4 text-sm md:text-lg text-gray-200 max-w-xl">
+            Barbershop premium dengan pelayanan profesional untuk gaya terbaik Anda.
+          </p>
 
+          
         </div>
       </section>
     </div>
