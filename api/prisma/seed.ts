@@ -6,9 +6,8 @@ import { hash } from 'bcryptjs';
 
     async function main() {
     // BUAT PASSWORD AMAN
-    const password = await hash('admin123', 12); 
+    const password = await hash('adminbarberx', 12); 
 
-    // HAPUS ADMIN LAMA (OPSIONAL)
     await prisma.admin.deleteMany(); 
 
     // BUAT ADMIN BARU
