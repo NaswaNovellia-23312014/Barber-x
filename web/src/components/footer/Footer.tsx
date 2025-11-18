@@ -26,7 +26,11 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Contact */}
+        <div>
+          <h3 className="font-semibold text-lg mb-3 text-[#C8A36A]">Kontak</h3>
 
+        </div>
       </div>
 
       {/* Copyright */}
