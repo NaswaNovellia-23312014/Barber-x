@@ -50,8 +50,6 @@ export default function Navbar() {
           Book Now
         </button>
 
-
-
       </div>
     </nav>
   );
