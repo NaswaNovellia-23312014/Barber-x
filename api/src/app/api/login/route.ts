@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { compare } from 'bcryptjs';
 import prisma from '@/lib/prisma';
-import jwt from 'jsonwebtoken'; // <-- Import JWT
+import jwt from 'jsonwebtoken'; 
 
 // Secret key dari environment variable
-const jwtSecret = process.env.NEXT_PUBLIC_JWT_SECRET;
+const jwtSecret = process.env.JWT_SECRET;
 
 // HANYA MENGIZINKAN METHOD POST
 export async function POST(request: Request) {

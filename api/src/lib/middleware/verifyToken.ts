@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 
 // Secret key dari environment variable
-const jwtSecret = process.env.NEXT_PUBLIC_JWT_SECRET;
+const jwtSecret = process.env.JWT_SECRET;
 
 // Interface untuk Payload Token (tipe data yang disimpan di token)
 interface TokenPayload {
