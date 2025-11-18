@@ -22,7 +22,12 @@ export default function Home() {
             Barbershop premium dengan pelayanan profesional untuk gaya terbaik Anda.
           </p>
 
-          
+          <a
+            href="/booking"
+            className="mt-6 px-6 py-3 bg-[#C8A36A] text-black text-sm font-semibold rounded-lg hover:bg-[#b58f59] transition"
+          >
+            Booking Sekarang
+          </a>
         </div>
       </section>
     </div>
