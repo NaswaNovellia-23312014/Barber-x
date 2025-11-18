@@ -30,6 +30,7 @@ export default function Footer() {
         <div>
           <h3 className="font-semibold text-lg mb-3 text-[#C8A36A]">Kontak</h3>
           <p className="text-sm">Whatsapp: 0812-3456-7890</p>
+          <p className="text-sm">Bandar Lampung</p>
 
         </div>
       </div>
