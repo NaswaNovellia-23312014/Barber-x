@@ -14,6 +14,16 @@ export default function Footer() {
           </p>
         </div>
 
+        {/* Menu */}
+        <div>
+          <h3 className="font-semibold text-lg mb-3 text-[#C8A36A]">Menu</h3>
+          <div className="flex flex-col gap-2 text-sm">
+            <Link href="/home" className="hover:text-[#C8A36A] transition">Home</Link>
+            
+          </div>
+        </div>
+
+
       </div>
 
       {/* Copyright */}
