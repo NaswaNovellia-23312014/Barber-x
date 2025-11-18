@@ -24,32 +24,32 @@ export default function Navbar() {
 
         {/* Menu */}
         <div className="hidden md:flex gap-8 font-medium text-[#3F3F3F]">
-          <Link href="/" className="hover:text-[#000000] transition relative group">
-            Home
-            <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#000000] transition-all duration-300 group-hover:w-full"></span>
-          </Link>
+  <Link href="/" className="hover:text-[#000000] transition relative group">
+    Home
+    <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#000000] transition-all duration-300 group-hover:w-full"></span>
+  </Link>
 
-          <Link href="/about" className="hover:text-[#000000] transition relative group">
-            About
-            <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#000000] transition-all duration-300 group-hover:w-full"></span>
-          </Link>
 
-          <Link href="/services" className="hover:text-[#000000] transition relative group">
-            Layanan & Harga
-            <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#000000] transition-all duration-300 group-hover:w-full"></span>
-          </Link>
+  <Link href="/about" className="hover:text-[#000000] transition relative group">
+    About
+    <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#000000] transition-all duration-300 group-hover:w-full"></span>
+  </Link>
 
-          <Link href="/contact" className="hover:text-[#000000] transition relative group">
-            Contact
-            <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#000000] transition-all duration-300 group-hover:w-full"></span>
-          </Link>
-        </div>
+  <Link href="/services" className="hover:text-[#000000] transition relative group">
+    Layanan & Harga
+    <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#000000] transition-all duration-300 group-hover:w-full"></span>
+  </Link>
+  <Link href="/contact" className="hover:text-[#000000] transition relative group">
+    Contact
+    <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#000000] transition-all duration-300 group-hover:w-full"></span>
+  </Link>
+</div>
+
 
         {/* Button */}
         <button className="bg-[#C8A36A] hover:bg-[#b38d55] transition px-5 py-2 rounded-full text-gray-00 font-semibold shadow">
           Book Now
         </button>
-
       </div>
     </nav>
   );
