@@ -8,4 +8,10 @@ export const metadata: Metadata = {
   description: "Website Barbershop Premium",
 };
 
-
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  
+}
