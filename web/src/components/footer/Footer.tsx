@@ -8,7 +8,10 @@ export default function Footer() {
 
       </div>
 
-
+      {/* Copyright */}
+      <div className="text-center text-xs text-gray-500 mt-10">
+        © {new Date().getFullYear()} Barber-X — All Rights Reserved.
+      </div>
     </footer>
   );
 }
