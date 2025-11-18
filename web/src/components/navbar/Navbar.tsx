@@ -17,7 +17,9 @@ export default function Navbar() {
             height={40}
             className="w-10 h-10"
           />
-
+          <h1 className="text-xl font-bold tracking-widest text-[#3F3F3F]">
+            BARBER-X
+          </h1>
         </div>
 
       </div>
