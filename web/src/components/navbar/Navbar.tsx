@@ -45,6 +45,11 @@ export default function Navbar() {
           </Link>
         </div>
 
+        {/* Button */}
+        <button className="bg-[#C8A36A] hover:bg-[#b38d55] transition px-5 py-2 rounded-full text-gray-00 font-semibold shadow">
+          Book Now
+        </button>
+
 
 
       </div>
