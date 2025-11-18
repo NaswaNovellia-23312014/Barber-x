@@ -9,6 +9,9 @@ export default function Home() {
           backgroundImage: "url('/logo.png')",
         }}
       >
+        {/* Overlay gelap */}
+        <div className="absolute inset-0 bg-black/50"></div>
+
         
       </section>
     </div>
