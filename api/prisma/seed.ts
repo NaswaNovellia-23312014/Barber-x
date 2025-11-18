@@ -1,5 +1,5 @@
-    import { PrismaClient } from '@prisma/client';
-    import { hash } from 'bcryptjs';
+import { PrismaClient } from '../src/generated/prisma';
+import { hash } from 'bcryptjs';
 
     // Inisialisasi Prisma Client
     const prisma = new PrismaClient();
