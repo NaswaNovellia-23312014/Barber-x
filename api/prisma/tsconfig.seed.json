@@ -1,5 +1,21 @@
 {
     "compilerOptions": {
-    "module": "CommonJS"
-    }
+    "module": "CommonJS", // Kompilasi seed sebagai CommonJS
+    "target": "ES2020",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "../prisma", // Output file .js ke folder prisma
+    "baseUrl": ".",
+    "paths": {
+        "@/*": ["./src/*"]
+        }
+    },
+    "include": [
+        "seed.ts" // Hanya menyertakan file seed.ts
+    ],
+    "exclude": [
+        "node_modules"
+    ]
 }
