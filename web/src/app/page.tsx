@@ -53,7 +53,7 @@ export default function Home() {
       alt="About Barber-X"
       width={480}
       height={350}
-
+      className="rounded-xl shadow-2xl w-[380px] md:w-[480px] object-cover"
     />
     </div>
 
