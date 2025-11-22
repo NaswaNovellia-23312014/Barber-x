@@ -19,7 +19,7 @@ export default function Footer() {
           <h3 className="font-semibold text-lg mb-3 text-[#C8A36A]">Menu</h3>
           <div className="flex flex-col gap-2 text-sm">
             <Link href="/home" className="hover:text-[#C8A36A] transition">Home</Link>
-            <Link href="/services" className="hover:text-[#C8A36A] transition">Layanan</Link>
+            <Link href="/services" className="hover:text-[#C8A36A] transition">Catalog</Link>
             <Link href="/booking" className="hover:text-[#C8A36A] transition">Booking</Link>
             <Link href="/about" className="hover:text-[#C8A36A] transition">About</Link>
             <Link href="/contact" className="hover:text-[#C8A36A] transition">Contact</Link>

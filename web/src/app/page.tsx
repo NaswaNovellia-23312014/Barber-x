@@ -49,7 +49,7 @@ export default function Home() {
     {/* Kanan – Gambar */}
     <div className="flex justify-center">
       <Image
-      src="/images/LogoX.png"
+      src="/images/cutt.jpg"
       alt="About Barber-X"
       width={480}
       height={350}
@@ -58,6 +58,7 @@ export default function Home() {
     </div>
   </div>
 </section>
+
     </div>
   );
 }
