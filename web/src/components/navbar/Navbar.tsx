@@ -11,7 +11,7 @@ export default function Navbar() {
         {/* Logo */}
         <div className="flex items-center gap-3">
           <Image
-            src="/pemandangan.jpg"
+            src="/images/LogoBarberX.png"
             alt="Barber-X Logo"
             width={40}
             height={40}
