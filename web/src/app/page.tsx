@@ -52,6 +52,7 @@ export default function Home() {
       src="/images/cutt.jpg"
       alt="About Barber-X"
       width={480}
+      height={350}
 
     />
     </div>
