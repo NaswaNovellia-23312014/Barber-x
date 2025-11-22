@@ -46,6 +46,11 @@ export default function Home() {
       </p>
     </div>
 
+    {/* Kanan – Gambar */}
+    <div className="flex justify-center">
+      
+    </div>
+
     
 
   </div>
