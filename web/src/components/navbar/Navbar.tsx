@@ -13,9 +13,9 @@ export default function Navbar() {
           <Image
             src="/images/LogoBarberX.png"
             alt="Barber-X Logo"
-            width={360}
+            width={80}
             height={80}
-            className="w-10 h-10"
+            className="w-15 h-15 object-contain"
           />
           <h1 className="text-xl font-bold tracking-widest text-[#3F3F3F]">
             BARBER-X
