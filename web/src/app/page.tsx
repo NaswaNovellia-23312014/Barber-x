@@ -6,7 +6,7 @@ export default function Home() {
       <section
         className="w-full h-[80vh] bg-cover bg-center relative"
         style={{
-          backgroundImage: "url('/pemandangan.jpg')",
+          backgroundImage: "url('/images/cutt.jpg')",
         }}
       >
         {/* Overlay gelap */}
