@@ -24,11 +24,10 @@ export default function Home() {
           </p>
 
           <a href="/booking" className="mt-6 px-6 py-3 bg-[#C8A36A] text-black text-sm font-semibold rounded-lg hover:bg-[#E9DFC7] transition" > Booking Now! </a>
-
-
-
         </div>
+        
       </section>
+      
     </div>
   );
 }
