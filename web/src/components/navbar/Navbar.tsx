@@ -35,7 +35,7 @@ export default function Navbar() {
     <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#000000] transition-all duration-300 group-hover:w-full"></span>
   </Link>
 
-  <Link href="/services" className="hover:text-[#000000] transition relative group">
+  <Link href="#services" className="hover:text-[#000000] transition relative group">
     Catalog
     <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#000000] transition-all duration-300 group-hover:w-full"></span>
   </Link>

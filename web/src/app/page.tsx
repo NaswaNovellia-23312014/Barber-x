@@ -54,15 +54,10 @@ export default function Home() {
       width={480}
       height={350}
       className="rounded-xl shadow-2xl w-[380px] md:w-[480px] object-cover border-2 border-gray-300"
-
     />
     </div>
-
-    
-
   </div>
 </section>
-
     </div>
   );
 }
