@@ -24,7 +24,7 @@ export default function Navbar() {
 
         {/* Menu */}
         <div className="hidden md:flex gap-8 font-medium text-[#3F3F3F]">
-  <Link href="/" className="hover:text-[#000000] transition relative group">
+  <Link href="#home" className="hover:text-[#000000] transition relative group">
     Home
     <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#000000] transition-all duration-300 group-hover:w-full"></span>
   </Link>
