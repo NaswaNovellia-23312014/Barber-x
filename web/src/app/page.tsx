@@ -40,6 +40,10 @@ export default function Home() {
       <h2 className="text-3xl md:text-5xl font-bold text-[#C8A36A] mb-6">
         About Barber-X
       </h2>
+      <p className="text-gray-300 leading-relaxed md:text-lg">
+        Barber-X is a premium barbershop offering a modern haircut experience with comfort, precision, and professional service.
+        We are committed to providing the best styles to boost your confidence.
+      </p>
     </div>
 
     
