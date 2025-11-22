@@ -15,7 +15,7 @@ export default function Home() {
         {/* Teks */}
         <div className="relative z-10 h-full flex flex-col justify-center items-center text-center px-4">
           <h1 className="text-4xl md:text-6xl font-bold text-[#E9DFC7] drop-shadow-lg">
-            Selamat Datang di Barber-X
+            Welcome To Barber-X
           </h1>
 
           <p className="mt-4 text-sm md:text-lg text-gray-200 max-w-xl">
