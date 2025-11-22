@@ -26,7 +26,7 @@ export default function Home() {
             href="/booking"
             className="mt-6 px-6 py-3 bg-[#C8A36A] text-black text-sm font-semibold rounded-lg hover:bg-[#b58f59] transition"
           >
-            Booking Sekarang
+            Booking Now!
           </a>
         </div>
       </section>
