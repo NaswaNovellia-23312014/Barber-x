@@ -37,7 +37,9 @@ export default function Home() {
 
     {/* Kiri – Teks */}
     <div className="text-center md:text-left">
-      
+      <h2 className="text-3xl md:text-5xl font-bold text-[#C8A36A] mb-6">
+        About Barber-X
+      </h2>
     </div>
 
     
