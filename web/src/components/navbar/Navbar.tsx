@@ -11,10 +11,10 @@ export default function Navbar() {
         {/* Logo */}
         <div className="flex items-center gap-3">
           <Image
-            src="/pemandangan.jpg"
+            src="/images/LogoBarberX.png"
             alt="Barber-X Logo"
-            width={40}
-            height={40}
+            width={80}
+            height={80}
             className="w-10 h-10"
           />
           <h1 className="text-xl font-bold tracking-widest text-[#3F3F3F]">
@@ -24,22 +24,22 @@ export default function Navbar() {
 
         {/* Menu */}
         <div className="hidden md:flex gap-8 font-medium text-[#3F3F3F]">
-  <Link href="/" className="hover:text-[#000000] transition relative group">
+  <Link href="#home" className="hover:text-[#000000] transition relative group">
     Home
     <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#000000] transition-all duration-300 group-hover:w-full"></span>
   </Link>
 
 
-  <Link href="/about" className="hover:text-[#000000] transition relative group">
+  <Link href="#about" className="hover:text-[#000000] transition relative group">
     About
     <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#000000] transition-all duration-300 group-hover:w-full"></span>
   </Link>
 
-  <Link href="/services" className="hover:text-[#000000] transition relative group">
-    Layanan & Harga
+  <Link href="#services" className="hover:text-[#000000] transition relative group">
+    Catalog
     <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#000000] transition-all duration-300 group-hover:w-full"></span>
   </Link>
-  <Link href="/contact" className="hover:text-[#000000] transition relative group">
+  <Link href="#contact" className="hover:text-[#000000] transition relative group">
     Contact
     <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#000000] transition-all duration-300 group-hover:w-full"></span>
   </Link>
