@@ -1,3 +1,4 @@
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -28,20 +29,16 @@ export default function Home() {
       </section>
 
       {/* ABOUT SECTION */}
-      <section
-        id="about"
-        className="min-h-screen bg-[#0E0E0E] flex flex-col items-center justify-center text-center px-6 mt-20"
-      >      
+<section
+  id="about"
+  className="w-full bg-[#0E0E0E] px-6 md:px-16 py-32 mt-10"
+>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 
-      <h2 className="text-3xl md:text-5xl font-bold text-[#C8A36A] mb-6">
-        About Barber-X
-      </h2>
+    
 
-      <p className="text-gray-300 max-w-2xl leading-relaxed md:text-lg">
-          Barber-X is a premium barbershop that offers a modern haircut experience with comfort, precision, and professional service. We are committed to providing the best styles to boost your confidence.
-        </p>
-      
-      </section>
+  </div>
+</section>
 
     </div>
   );
