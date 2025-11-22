@@ -15,7 +15,7 @@ export default function Navbar() {
             alt="Barber-X Logo"
             width={80}
             height={80}
-            className="w-15 h-15 object-contain"
+            className="w-10 h-10"
           />
           <h1 className="text-xl font-bold tracking-widest text-[#3F3F3F]">
             BARBER-X

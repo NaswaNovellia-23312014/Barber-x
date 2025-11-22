@@ -1,3 +1,4 @@
+
 export default function Home() {
   return (
     <div className="w-full mt-8">
@@ -22,12 +23,10 @@ export default function Home() {
             Barber-X is a Premium barbershop with professional service for your best style.
           </p>
 
-          <a
-            href="/booking"
-            className="mt-6 px-6 py-3 bg-[#C8A36A] text-black text-sm font-semibold rounded-lg hover:bg-[#b58f59] transition"
-          >
-            Booking Now!
-          </a>
+          <a href="/booking" className="mt-6 px-6 py-3 bg-[#C8A36A] text-black text-sm font-semibold rounded-lg hover:bg-[#E9DFC7] transition" > Booking Now! </a>
+
+
+
         </div>
       </section>
     </div>
