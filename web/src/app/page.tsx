@@ -48,7 +48,11 @@ export default function Home() {
 
     {/* Kanan – Gambar */}
     <div className="flex justify-center">
-      
+      <Image
+      src="/images/cutt.jpg"
+      alt="About Barber-X"
+
+    />
     </div>
 
     
