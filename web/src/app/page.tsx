@@ -25,8 +25,13 @@ export default function Home() {
 
           <a href="/booking" className="mt-6 px-6 py-3 bg-[#C8A36A] text-black text-sm font-semibold rounded-lg hover:bg-[#E9DFC7] transition" > Booking Now! </a>
         </div>
-        
       </section>
+
+      {/* ABOUT SECTION */}
+      <section
+        id="about"
+        className="min-h-screen bg-[#0E0E0E] flex flex-col items-center justify-center text-center px-6"
+      ></section>
       
     </div>
   );
