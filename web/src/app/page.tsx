@@ -35,6 +35,11 @@ export default function Home() {
 >
   <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 
+    {/* Kiri – Teks */}
+    <div className="text-center md:text-left">
+      
+    </div>
+
     
 
   </div>
