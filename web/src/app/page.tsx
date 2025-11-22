@@ -30,8 +30,8 @@ export default function Home() {
       {/* ABOUT SECTION */}
       <section
         id="about"
-        className="min-h-screen bg-[#0E0E0E] flex flex-col items-center justify-center text-center px-6"
-      >
+        className="min-h-screen bg-[#0E0E0E] flex flex-col items-center justify-center text-center px-6 mt-20"
+      >      
 
       <h2 className="text-3xl md:text-5xl font-bold text-[#C8A36A] mb-6">
         About Barber-X
