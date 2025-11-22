@@ -2,7 +2,7 @@
 'use client';
 
 import * as React from 'react';
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 // date-fns imports
 import { format, getDay, setHours, setMinutes, isToday } from 'date-fns';
@@ -21,31 +21,27 @@ import { Booking } from '@/types';
 import { CalendarIcon } from 'lucide-react'; 
 
 interface CustomDateTimePickerProps {
-  // Prop ini sekarang menjadi sumber tunggal kebenaran
   selectedDate: Date | undefined; 
   onSelectDate: (date: Date | undefined) => void;
 }
 
 export default function CustomDateTimePicker({
-  selectedDate, // Prop: Tanggal yang dipilih (dari parent)
-  onSelectDate, // Prop: Callback saat tanggal/waktu diubah
+  selectedDate, 
+  onSelectDate, 
 }: CustomDateTimePickerProps) {
   
-  // HANYA state untuk data fetching dan kontrol UI Popover
+  const [isClient, setIsClient] = useState(false);
   const [bookedTimes, setBookedTimes] = useState<Set<string>>(new Set());
   const [fetchingBookings, setFetchingBookings] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-  const isMounted = useRef(false);
   useEffect(() => {
-    isMounted.current = true;
+    setIsClient(true);
   }, []);
-
 
   // Ambil data booking untuk tanggal yang dipilih dari backend
   useEffect(() => {
-    // Gunakan prop selectedDate langsung sebagai dependensi dan data
-    if (!isMounted.current || !selectedDate) { 
+    if (!isClient || !selectedDate) { 
         setBookedTimes(new Set()); 
         return;
     }
@@ -53,7 +49,6 @@ export default function CustomDateTimePicker({
     const fetchBookingsForDate = async () => {
       setFetchingBookings(true);
       try {
-        // Gunakan selectedDate (prop) sebagai basis
         const formattedDate = format(selectedDate, 'yyyy-MM-dd'); 
         const res = await fetch(`${API_URL}/bookings?date=${formattedDate}`);
         
@@ -70,8 +65,8 @@ export default function CustomDateTimePicker({
               try {
                   const bookingDateTime = parseISO(booking.bookingTime);
                   if (bookingDateTime instanceof Date && !isNaN(bookingDateTime.getTime())) {
-                      const timeSlot = format(bookingDateTime, 'HH:mm');
-                      newBookedTimes.add(timeSlot);
+                    const timeSlot = format(bookingDateTime, 'HH:mm');
+                    newBookedTimes.add(timeSlot);
                   }
               } catch (parseError) {
                   console.error('Error parsing bookingTime string:', booking.bookingTime, parseError);
@@ -90,30 +85,23 @@ export default function CustomDateTimePicker({
     };
 
     fetchBookingsForDate();
-    // Dependensi: Hanya bergantung pada prop selectedDate
-  }, [selectedDate]); 
+  }, [selectedDate, isClient]); 
 
   
-  // Handler saat tanggal dipilih dari kalender
   const handleDateChange = (date: Date | undefined) => {
-    // 1. Panggil prop onSelectDate untuk update state di parent (Date: date, Time: undefined)
     onSelectDate(date); 
     
-    // 2. Menutup popover
     if (date) { 
         setIsPopoverOpen(false); 
     }
   };
 
-  // Handler saat slot waktu dipilih
   const handleTimeSlotClick = (slotTime: string) => {
     if (!selectedDate) return;
 
     const [hours, minutes] = slotTime.split(':').map(Number);
-    // Gunakan selectedDate (prop) sebagai basis tanggal, lalu tambahkan waktu
     const fullSelectedDateTime = setMinutes(setHours(selectedDate, hours), minutes);
     
-    // Panggil prop onSelectDate untuk update state di parent (Date: date, Time: slotTime)
     onSelectDate(fullSelectedDateTime);
   };
   
@@ -121,7 +109,7 @@ export default function CustomDateTimePicker({
   const allPossibleTimeSlots = useMemo(() => {
     const slots: string[] = [];
     const startHour = 9;
-    const endHour = 21; // 9 PM
+    const endHour = 21; 
     const intervalMinutes = 30;
 
     for (let h = startHour; h < endHour; h++) {
@@ -134,8 +122,7 @@ export default function CustomDateTimePicker({
 
   // Filter slot waktu yang ditampilkan
   const filteredTimeSlots = useMemo(() => {
-    // Gunakan prop selectedDate untuk logika hari ini
-    if (!isMounted.current || !selectedDate) return []; 
+    if (!isClient || !selectedDate) return []; 
 
     const now = new Date();
     const currentHourMinute = format(now, 'HH:mm');
@@ -156,20 +143,35 @@ export default function CustomDateTimePicker({
         
         return { time: slotTime, isBooked: isDisabled };
     });
-  }, [allPossibleTimeSlots, selectedDate, bookedTimes]);
+  }, [allPossibleTimeSlots, selectedDate, bookedTimes, isClient]);
 
-
-  // Helper untuk menentukan apakah hari itu weekday (Senin-Jumat)
   const isWeekday = (date: Date) => {
     const day = getDay(date);
-    return day !== 0 && day !== 6; // Hanya hari Senin-Jumat
+    return day !== 0 && day !== 6; 
   };
+
+  // === SOLUSI HYDRATION ERROR ===
+  if (!isClient) {
+      return (
+          <div className="space-y-4">
+              <Label className="block text-sm font-medium text-gray-700">Pilih Tanggal</Label>
+              <Button
+                  variant={"outline"}
+                  className="w-full justify-start text-left font-normal text-muted-foreground"
+                  disabled
+              >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  <span>Memuat tanggal...</span>
+              </Button>
+          </div>
+      );
+  }
+  // ============================
     
   return (
     <div className="space-y-4">
       <Label className="block text-sm font-medium text-gray-700">Pilih Tanggal</Label>
       
-      {/* Mengikat state open ke Popover */}
       <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -181,16 +183,14 @@ export default function CustomDateTimePicker({
             onClick={() => setIsPopoverOpen(true)}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {/* Tampilkan prop selectedDate */}
             {selectedDate ? format(selectedDate, "dd MMMM yyyy") : <span>Pilih tanggal</span>}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
           <Calendar
             mode="single"
-            // selected BINDING LANGSUNG ke prop selectedDate
             selected={selectedDate} 
-            onSelect={handleDateChange} // onSelect memanggil parent's callback
+            onSelect={handleDateChange} 
             initialFocus
             disabled={(date) => {
                 const today = new Date();
@@ -213,7 +213,6 @@ export default function CustomDateTimePicker({
                 <Button
                   key={slot.time}
                   type="button"
-                  // Bandingkan waktu yang dipilih di prop dengan slot yang ada
                   variant={selectedDate && format(selectedDate, 'HH:mm') === slot.time ? 'default' : 'outline'}
                   onClick={() => handleTimeSlotClick(slot.time)}
                   disabled={slot.isBooked} 
