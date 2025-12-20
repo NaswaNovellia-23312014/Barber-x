@@ -53,10 +53,19 @@ export default function Home() {
 
             <div className="grid grid-cols-2 gap-6 mt-8">
               {[
-                ["Professional", "Skilled barbers with experience and passion."],
-                ["Premium Service", "High quality tools and grooming products."],
+                [
+                  "Professional",
+                  "Skilled barbers with experience and passion.",
+                ],
+                [
+                  "Premium Service",
+                  "High quality tools and grooming products.",
+                ],
                 ["Comfort Space", "Relaxing place with modern interior."],
-                ["Best Experience", "Grooming experience that boosts confidence."],
+                [
+                  "Best Experience",
+                  "Grooming experience that boosts confidence.",
+                ],
               ].map(([title, desc]) => (
                 <div key={title}>
                   <h4 className="text-[#C8A36A] font-semibold text-lg">
@@ -91,11 +100,12 @@ export default function Home() {
             OUR SERVICES
           </h2>
           <p className="text-gray-500 mt-3">
-  Choose the best service for your style
-</p>
-          
+            Choose the best service for your style
+          </p>
         </div>
-        
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+</div>
       </section>
     </div>
   );
