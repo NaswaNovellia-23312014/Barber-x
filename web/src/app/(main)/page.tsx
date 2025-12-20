@@ -50,7 +50,11 @@ export default function Home() {
               About Us
             </span>
 
-            
+            <h2 className="text-3xl md:text-5xl font-bold text-[#E9DFC7] mt-3 mb-6">
+              More Than Just a Haircut
+            </h2>
+
+
       <p className="text-gray-300 leading-relaxed md:text-lg">
         Barber-X is a premium barbershop offering a modern haircut experience with comfort, precision, and professional service.
         We are committed to providing the best styles to boost your confidence.
