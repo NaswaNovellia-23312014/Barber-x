@@ -341,29 +341,77 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
+        {/* PANEL KANAN: MANAJEMEN LAYANAN (SERVICES) */}
+        <div className="lg:col-span-4 space-y-6">
+          <div className="bg-white p-6 rounded-[32px] shadow-sm border border-gray-100">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="font-black text-[10px] uppercase tracking-widest text-gray-400">Services</h2>
+              <button 
+                onClick={() => { 
+                  setEditingServiceId(null); 
+                  setServiceFormData({name:'', price:0, duration:0, description:''}); 
+                  setIsModalOpen(true); 
+                }} 
+                className="p-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 shadow-md transition"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
             </div>
-
-            {/* Recent Activity */}
-            <div className="bg-white p-6 rounded-lg shadow-md mt-6">
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">Recent Activity</h3>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
-                  <span>New booking from John Doe</span>
-                  <span className="text-sm text-gray-500">2 hours ago</span>
+            
+            <div className="space-y-3">
+              {services.map(s => (
+                <div key={s.id} className="p-4 border border-gray-50 rounded-2xl flex justify-between items-center group hover:border-indigo-100 transition">
+                  <div>
+                    <p className="font-bold text-sm text-gray-800">{s.name}</p>
+                    <p className="text-[10px] text-indigo-600 font-black tracking-tight">{formatCurrency(s.price)}</p>
+                  </div>
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => { setEditingServiceId(s.id); setServiceFormData({...s, description: s.description || ''}); setIsModalOpen(true); }} className="p-2 text-gray-400 hover:text-indigo-600 transition-colors"><Pencil className="w-4 h-4"/></button>
+                    <button onClick={async () => { if(confirm('Delete service?')) { await deleteService(s.id); loadData(false); }}} className="p-2 text-gray-400 hover:text-red-600 transition-colors"><Trash2 className="w-4 h-4"/></button>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
-                  <span>Service &quot;Haircut&quot; updated</span>
-                  <span className="text-sm text-gray-500">5 hours ago</span>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
-                  <span>New customer registered</span>
-                  <span className="text-sm text-gray-500">1 day ago</span>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
-      </main>
+      </div>
+
+      {/* MODAL: TAMBAH / UBAH LAYANAN */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-[40px] w-full max-w-md p-8 shadow-2xl">
+            <h3 className="text-xl font-black text-gray-900 mb-6 text-center">{editingServiceId ? 'Update Service' : 'New Service'}</h3>
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              try {
+                if(editingServiceId) await updateService(editingServiceId, serviceFormData);
+                else await createService(serviceFormData);
+                setIsModalOpen(false);
+                loadData(false);
+              } catch (err) { alert(err instanceof Error ? err.message : "Save failed"); }
+            }} className="space-y-4">
+              <div>
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2 mb-1 block">Service Name</label>
+                <input required className="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-600 font-bold" value={serviceFormData.name} onChange={e => setServiceFormData({...serviceFormData, name: e.target.value})} />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2 mb-1 block">Price (IDR)</label>
+                  <input required type="number" className="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-600 font-bold" value={serviceFormData.price} onChange={e => setServiceFormData({...serviceFormData, price: Number(e.target.value)})} />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2 mb-1 block">Duration (Mins)</label>
+                  <input required type="number" className="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-600 font-bold" value={serviceFormData.duration} onChange={e => setServiceFormData({...serviceFormData, duration: Number(e.target.value)})} />
+                </div>
+              </div>
+              <div className="flex gap-3 pt-4">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-4 font-black text-xs uppercase tracking-widest text-gray-400 hover:bg-gray-50 rounded-2xl transition">Cancel</button>
+                <button type="submit" className="flex-1 py-4 bg-indigo-600 text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
