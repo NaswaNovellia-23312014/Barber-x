@@ -108,6 +108,8 @@ export default function Home() {
           {[
   ["Haircut", "Rp 30.000", "/images/haircutt.png"],
     ["Haircut + Wash", "Rp 40.000", "/images/wash.png"],
+      ["Beard Trim", "Rp 25.000", "/images/beard.png"],
+
 
   
 ].map(() => null)}
