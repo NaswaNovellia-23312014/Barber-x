@@ -123,96 +123,107 @@ export default function AdminDashboardPage() {
         loadData(false);
     }, 30000); 
     return () => clearInterval(interval);
+  }, [loadData]);
 
-  // Handle untuk reports
-  const handleReports = () => {
-    console.log('Generating reports...');
-    // Simulasi generate report
-    alert('Report generation feature coming soon!');
-  };
+  /**
+   * Memperbarui status pemesanan dengan pendekatan 'Optimistic Update'
+   * untuk meningkatkan pengalaman pengguna (responsivitas instan).
+   */
+  const handleStatusChange = async (id: string, newStatus: string) => {
+    const originalBookings = [...bookings];
+    
+    // 1. Perbarui UI secara instan
+    setBookings(prev => prev.map(b => 
+        b.id === id ? { ...b, status: newStatus as Booking['status'] } : b
+    ));
 
-  // Handle untuk quick stats filter
-  const handleStatsFilter = (filter: string) => {
-    console.log(`Filtering by: ${filter}`);
-    // Implement filter logic here
-    alert(`Filtering bookings by: ${filter}`);
-  };
-
-  // Handle untuk refresh data
-  const handleRefreshData = async () => {
-    setLoading(true);
     try {
-      // Simulasi refresh data
-      console.log('Refreshing dashboard data...');
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Update stats dengan data baru (simulasi)
-      setStats(prev => ({
-        ...prev,
-        total: prev.total + 1,
-        pending: prev.pending + 1
-      }));
-      
-      alert('Dashboard data refreshed!');
-    } catch (error) {
-      console.error('Failed to refresh data:', error);
-      alert('Failed to refresh data');
-    } finally {
-      setLoading(false);
+        // 2. Kirim permintaan pembaruan ke backend
+        await updateBookingStatus(id, { status: newStatus as Booking['status'] });
+        
+        // 3. Jika status selesai, otomatis pindahkan fokus ke tab Riwayat
+        if (normalizeStatus(newStatus) === 'COMPLETED') {
+            setActiveTab('COMPLETED');
+        }
+    } catch (err) {
+        // Kembalikan data ke kondisi awal jika API gagal
+        setBookings(originalBookings);
+        alert(err instanceof Error ? err.message : "Update failed"); 
     }
   };
 
-  // Handle logout
   const handleLogout = () => {
-    if (confirm('Are you sure you want to logout?')) {
-      localStorage.removeItem('barberx_admin_token');
-      router.push('/admin/login');
+    if (confirm('Are you sure you want to log out?')) {
+      removeAuthData();
+      router.replace('/admin/login');
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading Dashboard...</p>
-        </div>
-      </div>
-    );
-  }
+  // Tampilan indikator pemuatan data awal
+  if (isLoading) return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 text-indigo-600">
+      <RefreshCw className="w-8 h-8 animate-spin" />
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">
-                BARBER<span className="text-red-600">X</span> Admin
+    <div className="min-h-screen bg-[#F8FAFC] p-4 md:p-8 font-sans text-gray-900">
+      
+      {/* BAGIAN HEADER DASHBOARD */}
+      <header className="max-w-7xl mx-auto mb-10 px-4">
+        {/* Baris Utama */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          
+          <div className="flex items-center gap-4">
+            {/* Logo */}
+            <Image
+              src="/images/LogoBarberX.png"
+              alt="Barber-X Logo"
+              width={72}
+              height={72}
+              className="object-contain"
+              priority
+            />
+
+            {/* Teks */}
+            <div className="flex flex-col">
+              <h1 className="text-2xl font-black tracking-tighter leading-tight">
+                BARBER-X ADMIN
               </h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-700">Welcome, {admin?.username}</span>
-              
-              {/* Refresh Button */}
-              <button
-                onClick={handleRefreshData}
-                disabled={loading}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm transition duration-200 disabled:opacity-50"
-              >
-                {loading ? 'Refreshing...' : 'Refresh'}
-              </button>
-              
-              {/* Logout Button */}
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition duration-200"
-              >
-                Logout
-              </button>
+              <p className="text-gray-500 text-sm italic">
+                Welcome back,{" "}
+                <span className="font-bold text-indigo-600">
+                  {user?.username}
+                </span>
+              </p>
             </div>
           </div>
+
+          {/* Kanan: Tombol Aksi */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                setIsRefreshing(true);
+                loadData(false);
+              }}
+              className="p-2.5 bg-white border rounded-xl hover:bg-gray-50 transition shadow-sm active:scale-95"
+            >
+              <RefreshCw
+                className={`w-5 h-5 text-gray-600 ${
+                  isRefreshing ? "animate-spin" : ""
+                }`}
+              />
+            </button>
+
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-4 py-2.5 bg-red-50 text-red-600 rounded-xl font-bold hover:bg-red-100 transition border border-red-100 shadow-sm active:scale-95"
+            >
+              <LogOut className="w-4 h-4" />
+              Logout
+            </button>
+          </div>
+        </div>
         </div>
       </header>
 
