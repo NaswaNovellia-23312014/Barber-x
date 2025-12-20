@@ -113,6 +113,13 @@ export default function Home() {
             <div key={title} className="bg-white rounded-2xl">
               <h3>{title}</h3>
               <span>{price}</span>
+              <Image
+                src={img}
+                alt={title}
+                width={300}
+                height={200}
+                className="object-cover w-full h-[180px]"
+              />
             </div>
           ))}
         </div>
