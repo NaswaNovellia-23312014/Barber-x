@@ -141,61 +141,84 @@ export default function CustomDateTimePicker({
   }
     
   return (
-    <div className="space-y-4">
-      <Label className="block text-sm font-medium text-gray-700">Pilih Tanggal</Label>
-      
-      <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant={"outline"}
-            className={cn(
-              "w-full justify-start text-left font-normal",
-              !selectedDate && "text-muted-foreground"
-            )}
-            onClick={() => setIsPopoverOpen(true)}
-          >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {selectedDate ? format(selectedDate, "dd MMMM yyyy") : <span>Pilih tanggal</span>}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            mode="single"
-            selected={selectedDate} 
-            onSelect={handleDateChange} 
-            initialFocus
-            disabled={(date) => {
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                return !isWeekday(date) || date < today;
-            }} 
-          />
-        </PopoverContent>
-      </Popover>
+    <div className="space-y-5">
+      {/* Bagian Pemilihan Tanggal */}
+      <div className="space-y-1.5">
+        <Label className="text-[10px] font-black uppercase tracking-widest text-black ml-2">
+          Select Date
+        </Label>
+        
+        <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn(
+                "w-full justify-start text-left font-bold py-6 px-5 rounded-2xl border-none bg-gray-50 transition-all focus:ring-3 focus:ring-gray-200",
+                !selectedDate && "text-gray-300"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4 text-black" />
+              {selectedDate ? format(selectedDate, "PPP") : <span>Choose a date</span>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0 rounded-3xl overflow-hidden shadow-2xl border-none" align="start">
+            <Calendar
+              mode="single"
+              selected={selectedDate} 
+              onSelect={handleDateChange} 
+              initialFocus
+              disabled={(date) => {
+                  const today = new Date();
+                  today.setHours(0, 0, 0, 0);
+                  return !isWeekday(date) || date < today;
+              }} 
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
 
-      {/* Tampilkan slot waktu jika selectedDate ada */}
+      {/* Bagian Pemilihan Waktu */}
       {selectedDate && (
-        <div className="mt-4">
-          <Label className="block text-sm font-medium text-gray-700 mb-2">Pilih Waktu ({format(selectedDate, 'dd MMM yyyy')}):</Label>
+        <div className="space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
+          <Label className="text-[10px] font-black uppercase tracking-widest text-black ml-2">
+            Available Time ({format(selectedDate, 'MMM dd')})
+          </Label>
+          
           {fetchingBookings ? (
-            <p className="text-gray-500">Memuat slot waktu...</p>
+            <div className="flex items-center gap-2 text-black font-bold text-xs p-4 bg-gray-50 rounded-2xl">
+               <div className="w-3 h-3 border-2 border-t-transparent border-black rounded-full animate-spin" />
+               Fetching availability...
+            </div>
           ) : filteredTimeSlots.length > 0 ? (
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 max-h-48 overflow-y-auto pr-2">
-              {filteredTimeSlots.map((slot) => (
-                <Button
-                  key={slot.time}
-                  type="button"
-                  variant={selectedDate && format(selectedDate, 'HH:mm') === slot.time ? 'default' : 'outline'}
-                  onClick={() => handleTimeSlotClick(slot.time)}
-                  disabled={slot.isBooked} 
-                  className="px-2 py-1 text-xs"
-                >
-                  {slot.time}
-                </Button>
-              ))}
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+              {filteredTimeSlots.map((slot) => {
+                const isSelected = selectedDate ? format(selectedDate, 'HH:mm') === slot.time : false;
+
+                return (
+                  <Button
+                    key={slot.time}
+                    type="button"
+                    // Jika terpilih, paksa variant default (hitam), jika tidak pakai outline
+                    variant={isSelected ? 'default' : 'outline'}
+                    onClick={() => handleTimeSlotClick(slot.time)}
+                    disabled={slot.isBooked} 
+                    className={cn(
+                      "rounded-xl font-bold py-5 transition-all text-sm border",
+                      isSelected 
+                        ? "bg-gray-900 text-white border-gray-900 shadow-lg scale-105 z-10" // State terpilih: Hitam pekat
+                        : "bg-white text-gray-600 border-gray-200 hover:border-gray-200 hover:text-black", // State biasa
+                      slot.isBooked && "bg-gray-50 text-gray-300 border-none opacity-50 cursor-not-allowed" // State penuh
+                    )}
+                  >
+                    {slot.time}
+                  </Button>
+                );
+              })}
             </div>
           ) : (
-            <p className="text-gray-500">Tidak ada slot waktu tersedia untuk tanggal ini.</p>
+            <p className="text-gray-400 text-xs font-bold p-4 bg-gray-50 rounded-2xl text-center">
+                No slots available for this date.
+            </p>
           )}
         </div>
       )}
