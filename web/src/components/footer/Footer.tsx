@@ -31,7 +31,7 @@ export default function Footer() {
                   href={item.href}
                   className="group inline-flex items-center gap-2 hover:text-[#C8A36A] transition"
                 >
-                  <span className="w-0 h-[2px] bg-[#C8A36A] "></span>
+                  <span className="w-0 h-[2px] bg-[#C8A36A] group-hover:w-4 transition-all"></span>
                   {item.name}
                 </Link>
               </li>
