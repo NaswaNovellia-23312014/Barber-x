@@ -59,27 +59,24 @@ export async function loginAdmin(username: string, password: string): Promise<{ 
     method: 'POST',
     body: JSON.stringify({ username, password }),
   }, false); 
-  return response;
 }
 
-// SERVICES - READ
 export async function getAdminServices(): Promise<Service[]> {
   const response = await authenticatedFetcher<{ data: Service[] }>('/admin/services', {}, true);
   return response.data;
 }
 
-// SERVICES - CREATE
 export async function createService(serviceData: Omit<Service, 'id' | 'createdAt' | 'updatedAt'>): Promise<Service> {
-  const response = await authenticatedFetcher<{ service: Service }>('/admin/services', {
+  const response = await authenticatedFetcher<ServiceResponse>('/admin/services', {
     method: 'POST',
     body: JSON.stringify(serviceData),
   }, true);
-  return response.service || (response as Service);
+  // Ambil service dari dalam objek { service: {...} }
+  return response.service;
 }
 
-// SERVICES - UPDATE
 export async function updateService(id: string, serviceData: Partial<Service>): Promise<Service> {
-  const response = await authenticatedFetcher<{ service: Service }>('/admin/services?id=' + id, {
+  const response = await authenticatedFetcher<ServiceResponse>(`/admin/services?id=${id}`, {
     method: 'PUT',
     body: JSON.stringify(serviceData),
   }, true);
