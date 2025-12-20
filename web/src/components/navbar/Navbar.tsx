@@ -36,7 +36,8 @@ export default function Navbar() {
         <div className="hidden md:flex gap-8 font-medium text-[#3F3F3F]">
           <Link
             href="#home"
-            className="hover:text-black transition relative group"          >
+            className="hover:text-black transition relative group"
+          >
             Home
             <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#000000] transition-all duration-300 group-hover:w-full"></span>
           </Link>
@@ -65,6 +66,13 @@ export default function Navbar() {
           </Link>
         </div>
       </div>
+
+      {/* Menu Mobile */}
+      {open && (
+        <div className="md:hidden bg-[#F5ECD6] flex flex-col gap-4 px-6 py-4 border-t border-black/10 font-medium text-[#3F3F3F]">
+          
+        </div>
+      )}
     </nav>
   );
 }
