@@ -46,9 +46,11 @@ export default function Home() {
 
     {/* Kiri – Teks */}
     <div className="text-center md:text-left">
-      <h2 className="text-3xl md:text-5xl font-bold text-[#C8A36A] mb-6">
-        About Barber-X
-      </h2>
+      <span className="text-sm tracking-widest text-[#C8A36A] uppercase">
+              About Us
+            </span>
+
+            
       <p className="text-gray-300 leading-relaxed md:text-lg">
         Barber-X is a premium barbershop offering a modern haircut experience with comfort, precision, and professional service.
         We are committed to providing the best styles to boost your confidence.
