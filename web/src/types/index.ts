@@ -19,6 +19,7 @@ export interface Booking {
 export interface User {
     id: string;
     username: string;
+    role: string;
 }
 
 // Tipe data untuk respons sukses dari API login
