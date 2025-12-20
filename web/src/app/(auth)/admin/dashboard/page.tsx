@@ -1,310 +1,417 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { 
+  LayoutDashboard, 
+  Clock, 
+  CheckCircle2, 
+  RefreshCw, 
+  LogOut, 
+  Plus, 
+  Pencil, 
+  Trash2, 
+  Phone,
+  Calendar as CalendarIcon
+} from 'lucide-react';
 
-interface AdminData {
-  id: string;
-  username: string;
-}
+import { Booking, Service, User } from '@/types';
+import { getAdminUser, removeAuthData } from '@/lib/auth';
+import { 
+    getAdminBookings, 
+    getAdminServices, 
+    updateBookingStatus, 
+    deleteService,
+    createService,
+    updateService
+} from '@/lib/api';
+import { formatCurrency } from '@/lib/utils';
+import Image from 'next/image';
 
-interface BookingStats {
-  total: number;
-  pending: number;
-  completed: number;
-  cancelled: number;
-}
-
-export default function AdminDashboard() {
-  const [admin, setAdmin] = useState<AdminData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState<BookingStats>({
-    total: 0,
-    pending: 0,
-    completed: 0,
-    cancelled: 0
-  });
-  const [revenue, setRevenue] = useState(0);
+export default function AdminDashboardPage() {
   const router = useRouter();
+  
+  // --- STATE MANAGEMENT ---
+  const [user, setUser] = useState<User | null>(null);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
+  const [activeTab, setActiveTab] = useState<'ACTIVE' | 'COMPLETED'>('ACTIVE');
+  
+  // State untuk kontrol UI dan Modal
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingServiceId, setEditingServiceId] = useState<string | null>(null);
+  const [serviceFormData, setServiceFormData] = useState({
+      name: '', price: 0, duration: 0, description: ''
+  });
 
-  useEffect(() => {
-    // Cek apakah user sudah login
-    const token = localStorage.getItem('barberx_admin_token');
-    if (!token) {
-      router.push('/admin/login');
-      return;
-    }
+  /**
+   * Menormalisasi format status dari backend untuk memastikan konsistensi logika frontend.
+   */
+  const normalizeStatus = (status: string | undefined | null): string => {
+    if (!status) return '';
+    const s = String(status).toUpperCase().trim();
+    if (s === 'SELESAI' || s === 'SUCCESS' || s === 'DONE') return 'COMPLETED';
+    return s;
+  };
 
-    // Fetch admin data dan stats
-    const fetchDashboardData = async () => {
-      try {
-        // Simulasi data admin
-        const adminData: AdminData = {
-          id: '1',
-          username: 'admin'
-        };
-        
-        // Simulasi stats (nanti bisa dari API)
-        const statsData: BookingStats = {
-          total: 24,
-          pending: 8,
-          completed: 14,
-          cancelled: 2
-        };
+  /**
+   * Menghitung statistik pemesanan secara real-time untuk ditampilkan pada kartu informasi.
+   */
+  const stats = useMemo(() => {
+    const s = { total: 0, pending: 0, completed: 0 };
+    bookings.forEach(b => {
+      const status = normalizeStatus(b.status);
+      s.total++;
+      if (status === 'PENDING') s.pending++;
+      if (status === 'COMPLETED') s.completed++;
+    });
+    return s;
+  }, [bookings]);
 
-        setAdmin(adminData);
-        setStats(statsData);
-        setRevenue(2400000); // Rp 2.4 juta
-      } catch (error) {
-        console.error('Failed to fetch dashboard data:', error);
-        router.push('/admin/login');
-      } finally {
-        setLoading(false);
+  /**
+   * Menyaring data pemesanan yang ditampilkan berdasarkan tab aktif (Antrean dan Riwayat).
+   */
+  const filteredBookings = useMemo(() => {
+    return bookings.filter(b => {
+      const currentStatus = normalizeStatus(b.status);
+      if (activeTab === 'ACTIVE') {
+        return currentStatus !== 'COMPLETED' && currentStatus !== 'CANCELLED';
       }
-    };
+      return currentStatus === 'COMPLETED';
+    });
+  }, [bookings, activeTab]);
 
-    fetchDashboardData();
+  /**
+   * Mengambil data pemesanan dan layanan dari server secara paralel.
+   * Melakukan validasi token; jika tidak valid, pengguna diarahkan ke halaman login.
+   */
+  const loadData = useCallback(async (showFullLoading = true) => {
+    if (showFullLoading) setIsLoading(true);
+    try {
+        const currentUser = getAdminUser();
+        if (!currentUser) throw new Error('NO_TOKEN');
+        setUser(currentUser);
+
+        const [bookingsData, servicesData] = await Promise.all([
+            getAdminBookings(),
+            getAdminServices()
+        ]);
+        
+        setBookings(bookingsData || []);
+        setServices(servicesData || []);
+    } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        if (errorMessage.includes('TOKEN') || errorMessage.includes('UNAUTHORIZED')) {
+             removeAuthData(); 
+             router.replace('/admin/login');
+        }
+    } finally {
+        setIsLoading(false);
+        setIsRefreshing(false);
+    }
   }, [router]);
 
-  // Handle untuk manage bookings
-  const handleManageBookings = () => {
-    console.log('Navigating to bookings management...');
-    router.push('/admin/bookings');
-  };
+  /**
+   * Menjalankan inisialisasi data dan menetapkan interval polling setiap 30 detik
+   * untuk memastikan data dashboard (real-time).
+   */
+  useEffect(() => {
+    loadData(true);
+    const interval = setInterval(() => {
+        loadData(false);
+    }, 30000); 
+    return () => clearInterval(interval);
+  }, [loadData]);
 
-  // Handle untuk view services
-  const handleViewServices = () => {
-    console.log('Navigating to services management...');
-    router.push('/admin/services');
-  };
+  /**
+   * Memperbarui status pemesanan dengan pendekatan 'Optimistic Update'
+   * untuk meningkatkan pengalaman pengguna (responsivitas instan).
+   */
+  const handleStatusChange = async (id: string, newStatus: string) => {
+    const originalBookings = [...bookings];
+    
+    // 1. Perbarui UI secara instan
+    setBookings(prev => prev.map(b => 
+        b.id === id ? { ...b, status: newStatus as Booking['status'] } : b
+    ));
 
-  // Handle untuk customer data
-  const handleCustomerData = () => {
-    console.log('Navigating to customer data...');
-    // router.push('/admin/customers');
-    alert('Customer data feature coming soon!');
-  };
-
-  // Handle untuk reports
-  const handleReports = () => {
-    console.log('Generating reports...');
-    // Simulasi generate report
-    alert('Report generation feature coming soon!');
-  };
-
-  // Handle untuk quick stats filter
-  const handleStatsFilter = (filter: string) => {
-    console.log(`Filtering by: ${filter}`);
-    // Implement filter logic here
-    alert(`Filtering bookings by: ${filter}`);
-  };
-
-  // Handle untuk refresh data
-  const handleRefreshData = async () => {
-    setLoading(true);
     try {
-      // Simulasi refresh data
-      console.log('Refreshing dashboard data...');
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Update stats dengan data baru (simulasi)
-      setStats(prev => ({
-        ...prev,
-        total: prev.total + 1,
-        pending: prev.pending + 1
-      }));
-      
-      alert('Dashboard data refreshed!');
-    } catch (error) {
-      console.error('Failed to refresh data:', error);
-      alert('Failed to refresh data');
-    } finally {
-      setLoading(false);
+        // 2. Kirim permintaan pembaruan ke backend
+        await updateBookingStatus(id, { status: newStatus as Booking['status'] });
+        
+        // 3. Jika status selesai, otomatis pindahkan fokus ke tab Riwayat
+        if (normalizeStatus(newStatus) === 'COMPLETED') {
+            setActiveTab('COMPLETED');
+        }
+    } catch (err) {
+        // Kembalikan data ke kondisi awal jika API gagal
+        setBookings(originalBookings);
+        alert(err instanceof Error ? err.message : "Update failed"); 
     }
   };
 
-  // Handle logout
   const handleLogout = () => {
-    if (confirm('Are you sure you want to logout?')) {
-      localStorage.removeItem('barberx_admin_token');
-      router.push('/admin/login');
+    if (confirm('Are you sure you want to log out?')) {
+      removeAuthData();
+      router.replace('/admin/login');
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading Dashboard...</p>
-        </div>
-      </div>
-    );
-  }
+  // Tampilan indikator pemuatan data awal
+  if (isLoading) return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 text-indigo-600">
+      <RefreshCw className="w-8 h-8 animate-spin" />
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">
-                BARBER<span className="text-red-600">X</span> Admin
+    <div className="min-h-screen bg-[#F8FAFC] p-4 md:p-8 font-sans text-gray-900">
+      
+      {/* BAGIAN HEADER DASHBOARD */}
+      <header className="max-w-7xl mx-auto mb-10 px-4">
+        {/* Baris Utama */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          
+          <div className="flex items-center gap-4">
+            {/* Logo */}
+            <Image
+              src="/images/LogoBarberX.png"
+              alt="Barber-X Logo"
+              width={72}
+              height={72}
+              className="object-contain"
+              priority
+            />
+
+            {/* Teks */}
+            <div className="flex flex-col">
+              <h1 className="text-2xl font-black tracking-tighter leading-tight">
+                BARBER-X ADMIN
               </h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-700">Welcome, {admin?.username}</span>
-              
-              {/* Refresh Button */}
-              <button
-                onClick={handleRefreshData}
-                disabled={loading}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm transition duration-200 disabled:opacity-50"
-              >
-                {loading ? 'Refreshing...' : 'Refresh'}
-              </button>
-              
-              {/* Logout Button */}
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition duration-200"
-              >
-                Logout
-              </button>
+              <p className="text-gray-500 text-sm italic">
+                Welcome back,{" "}
+                <span className="font-bold text-indigo-600">
+                  {user?.username}
+                </span>
+              </p>
             </div>
           </div>
+
+          {/* Kanan: Tombol Aksi */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                setIsRefreshing(true);
+                loadData(false);
+              }}
+              className="p-2.5 bg-white border rounded-xl hover:bg-gray-50 transition shadow-sm active:scale-95"
+            >
+              <RefreshCw
+                className={`w-5 h-5 text-gray-600 ${
+                  isRefreshing ? "animate-spin" : ""
+                }`}
+              />
+            </button>
+
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-4 py-2.5 bg-red-50 text-red-600 rounded-xl font-bold hover:bg-red-100 transition border border-red-100 shadow-sm active:scale-95"
+            >
+              <LogOut className="w-4 h-4" />
+              Logout
+            </button>
+          </div>
+        </div>
+
+        {/* Tanggal */}
+        <div className="border-t mt-6 pt-4">
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+          </span>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="border-4 border-dashed border-gray-200 rounded-lg p-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-              Dashboard Admin
-            </h2>
-            
-            {/* Stats Cards dengan Filter */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">Total Bookings</h3>
-                <p className="text-3xl font-bold text-blue-600">{stats.total}</p>
-                <p className="text-sm text-gray-500 mt-2">+5 from last week</p>
-                <button
-                  onClick={() => handleStatsFilter('all')}
-                  className="mt-2 text-blue-500 hover:text-blue-700 text-sm"
-                >
-                  View All
-                </button>
-              </div>
-              
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">Pending</h3>
-                <p className="text-3xl font-bold text-yellow-600">{stats.pending}</p>
-                <p className="text-sm text-gray-500 mt-2">Need confirmation</p>
-                <button
-                  onClick={() => handleStatsFilter('pending')}
-                  className="mt-2 text-yellow-500 hover:text-yellow-700 text-sm"
-                >
-                  View Pending
-                </button>
-              </div>
-              
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">Completed</h3>
-                <p className="text-3xl font-bold text-green-600">{stats.completed}</p>
-                <p className="text-sm text-gray-500 mt-2">This month</p>
-                <button
-                  onClick={() => handleStatsFilter('completed')}
-                  className="mt-2 text-green-500 hover:text-green-700 text-sm"
-                >
-                  View Completed
-                </button>
-              </div>
-              
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">Revenue</h3>
-                <p className="text-3xl font-bold text-purple-600">
-                  Rp {revenue.toLocaleString('id-ID')}
-                </p>
-                <p className="text-sm text-gray-500 mt-2">This month</p>
-                <button
-                  onClick={handleReports}
-                  className="mt-2 text-purple-500 hover:text-purple-700 text-sm"
-                >
-                  View Report
-                </button>
-              </div>
-            </div>
+      {/* BAGIAN KARTU STATISTIK */}
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
+        <div className="bg-white p-8 rounded-[32px] shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
+          <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-3">
+            <CalendarIcon className="w-6 h-6" />
+          </div>
+          <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest">Total Bookings</p>
+          <h3 className="text-4xl font-black mt-1">{stats.total}</h3>
+        </div>
 
-            {/* Quick Actions */}
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <button 
-                  onClick={handleManageBookings}
-                  className="bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-lg transition duration-200 flex flex-col items-center justify-center"
-                >
-                  <svg className="w-6 h-6 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                  </svg>
-                  Manage Bookings
-                </button>
-                
-                <button 
-                  onClick={handleViewServices}
-                  className="bg-green-500 hover:bg-green-600 text-white p-4 rounded-lg transition duration-200 flex flex-col items-center justify-center"
-                >
-                  <svg className="w-6 h-6 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                  </svg>
-                  View Services
-                </button>
-                
-                <button 
-                  onClick={handleCustomerData}
-                  className="bg-purple-500 hover:bg-purple-600 text-white p-4 rounded-lg transition duration-200 flex flex-col items-center justify-center"
-                >
-                  <svg className="w-6 h-6 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                  </svg>
-                  Customer Data
-                </button>
-                
-                <button 
-                  onClick={handleReports}
-                  className="bg-orange-500 hover:bg-orange-600 text-white p-4 rounded-lg transition duration-200 flex flex-col items-center justify-center"
-                >
-                  <svg className="w-6 h-6 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                  Reports
-                </button>
-              </div>
-            </div>
+        <div className="bg-white p-8 rounded-[32px] shadow-sm border border-yellow-100 ring-2 ring-yellow-500/5 flex flex-col items-center justify-center text-center">
+          <div className="w-12 h-12 bg-yellow-50 text-yellow-600 rounded-2xl flex items-center justify-center mb-3">
+            <Clock className="w-6 h-6" />
+          </div>
+          <p className="text-yellow-600 text-[10px] font-black uppercase tracking-widest">Pending Approval</p>
+          <h3 className="text-4xl font-black mt-1 text-yellow-600">{stats.pending}</h3>
+        </div>
 
-            {/* Recent Activity */}
-            <div className="bg-white p-6 rounded-lg shadow-md mt-6">
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">Recent Activity</h3>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
-                  <span>New booking from John Doe</span>
-                  <span className="text-sm text-gray-500">2 hours ago</span>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
-                  <span>Service &quot;Haircut&quot; updated</span>
-                  <span className="text-sm text-gray-500">5 hours ago</span>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
-                  <span>New customer registered</span>
-                  <span className="text-sm text-gray-500">1 day ago</span>
-                </div>
-              </div>
+        <div className="bg-white p-8 rounded-[32px] shadow-sm border border-green-100 ring-2 ring-green-500/5 flex flex-col items-center justify-center text-center">
+          <div className="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center mb-3">
+            <CheckCircle2 className="w-6 h-6" />
+          </div>
+          <p className="text-green-600 text-[10px] font-black uppercase tracking-widest">Services Completed</p>
+          <h3 className="text-4xl font-black mt-1 text-green-600">{stats.completed}</h3>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        {/* PANEL KIRI: TABEL PEMESANAN */}
+        <div className="lg:col-span-8 bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden">
+          <div className="flex border-b">
+            <button 
+              onClick={() => setActiveTab('ACTIVE')}
+              className={`flex-1 py-5 text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'ACTIVE' ? 'text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50/30' : 'text-gray-400 hover:bg-gray-50'}`}
+            >
+              Queue & Active ({bookings.filter(b => normalizeStatus(b.status) !== 'COMPLETED').length})
+            </button>
+            <button 
+              onClick={() => setActiveTab('COMPLETED')}
+              className={`flex-1 py-5 text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'COMPLETED' ? 'text-green-600 border-b-2 border-green-600 bg-green-50/30' : 'text-gray-400 hover:bg-gray-50'}`}
+            >
+              Completed History ({stats.completed})
+            </button>
+          </div>
+
+          <div className="p-6">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-separate border-spacing-y-3">
+                <thead>
+                  <tr className="text-gray-400 text-[10px] font-black uppercase tracking-widest">
+                    <th className="px-4 py-2">Customer</th>
+                    <th className="px-4 py-2">Service & Schedule</th>
+                    <th className="px-4 py-2 text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredBookings.length === 0 ? (
+                    <tr>
+                      <td colSpan={3} className="text-center py-20 text-gray-400 italic text-sm">
+                        No bookings found in this section.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredBookings.map(b => (
+                      <tr key={b.id} className="bg-white hover:bg-gray-50/50 transition-colors">
+                        <td className="px-4 py-4 rounded-l-2xl border-y border-l border-gray-100">
+                          <div className="font-bold text-gray-900">{b.customerName}</div>
+                          <div className="text-[10px] text-gray-500 flex items-center gap-1 mt-1 font-medium">
+                            <Phone className="w-3 h-3"/> {b.customerPhone}
+                          </div>
+                        </td>
+                        <td className="px-4 py-4 border-y border-gray-100">
+                          <div className="text-sm font-bold text-indigo-600">{b.service?.name || 'Service Deleted'}</div>
+                          <div className="text-[10px] text-gray-400 mt-1 font-bold">
+                            {new Date(b.bookingTime).toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' })} • {new Date(b.bookingTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                          </div>
+                        </td>
+                        <td className="px-4 py-4 rounded-r-2xl border-y border-r border-gray-100 text-center">
+                          <select 
+                            value={normalizeStatus(b.status)}
+                            onChange={(e) => handleStatusChange(b.id, e.target.value)}
+                            className={`text-[10px] font-black px-3 py-2 rounded-full border-none ring-1 cursor-pointer outline-none transition-all
+                              ${normalizeStatus(b.status) === 'CONFIRMED' ? 'ring-green-500 bg-green-50 text-green-700' : 
+                                normalizeStatus(b.status) === 'PENDING' ? 'ring-yellow-500 bg-yellow-50 text-yellow-700' :
+                                normalizeStatus(b.status) === 'COMPLETED' ? 'ring-blue-500 bg-blue-50 text-blue-700' : 
+                                'ring-red-500 bg-red-50 text-red-700'}`}
+                          >
+                            <option value="PENDING">PENDING</option>
+                            <option value="CONFIRMED">CONFIRMED</option>
+                            <option value="COMPLETED">COMPLETED</option>
+                            <option value="CANCELLED">CANCELLED</option>
+                          </select>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
-      </main>
+
+        {/* PANEL KANAN: MANAJEMEN LAYANAN (SERVICES) */}
+        <div className="lg:col-span-4 space-y-6">
+          <div className="bg-white p-6 rounded-[32px] shadow-sm border border-gray-100">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="font-black text-[10px] uppercase tracking-widest text-gray-400">Services</h2>
+              <button 
+                onClick={() => { 
+                  setEditingServiceId(null); 
+                  setServiceFormData({name:'', price:0, duration:0, description:''}); 
+                  setIsModalOpen(true); 
+                }} 
+                className="p-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 shadow-md transition"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+            
+            <div className="space-y-3">
+              {services.map(s => (
+                <div key={s.id} className="p-4 border border-gray-50 rounded-2xl flex justify-between items-center group hover:border-indigo-100 transition">
+                  <div>
+                    <p className="font-bold text-sm text-gray-800">{s.name}</p>
+                    <p className="text-[10px] text-indigo-600 font-black tracking-tight">{formatCurrency(s.price)}</p>
+                  </div>
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => { setEditingServiceId(s.id); setServiceFormData({...s, description: s.description || ''}); setIsModalOpen(true); }} className="p-2 text-gray-400 hover:text-indigo-600 transition-colors"><Pencil className="w-4 h-4"/></button>
+                    <button onClick={async () => { if(confirm('Delete service?')) { await deleteService(s.id); loadData(false); }}} className="p-2 text-gray-400 hover:text-red-600 transition-colors"><Trash2 className="w-4 h-4"/></button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* MODAL: TAMBAH / UBAH LAYANAN */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-[40px] w-full max-w-md p-8 shadow-2xl">
+            <h3 className="text-xl font-black text-gray-900 mb-6 text-center">{editingServiceId ? 'Update Service' : 'New Service'}</h3>
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              try {
+                if(editingServiceId) await updateService(editingServiceId, serviceFormData);
+                else await createService(serviceFormData);
+                setIsModalOpen(false);
+                loadData(false);
+              } catch (err) { alert(err instanceof Error ? err.message : "Save failed"); }
+            }} className="space-y-4">
+              <div>
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2 mb-1 block">Service Name</label>
+                <input required className="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-600 font-bold" value={serviceFormData.name} onChange={e => setServiceFormData({...serviceFormData, name: e.target.value})} />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2 mb-1 block">Price (IDR)</label>
+                  <input required type="number" className="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-600 font-bold" value={serviceFormData.price} onChange={e => setServiceFormData({...serviceFormData, price: Number(e.target.value)})} />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2 mb-1 block">Duration (Mins)</label>
+                  <input required type="number" className="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-600 font-bold" value={serviceFormData.duration} onChange={e => setServiceFormData({...serviceFormData, duration: Number(e.target.value)})} />
+                </div>
+              </div>
+              <div className="flex gap-3 pt-4">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-4 font-black text-xs uppercase tracking-widest text-gray-400 hover:bg-gray-50 rounded-2xl transition">Cancel</button>
+                <button type="submit" className="flex-1 py-4 bg-indigo-600 text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

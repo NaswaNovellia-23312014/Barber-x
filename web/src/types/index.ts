@@ -1,34 +1,38 @@
 export interface Service {
     id: string;
     name: string;
-    description: string;
+    description?: string | null; // Opsional
     price: number;
-    duration: number; // Durasi layanan dalam menit
+    duration: number;
+    imageUrl?: string | null; // Opsional
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export interface Booking {
     id: string;
     customerName: string;
     customerPhone: string;
-    bookingTime: string; // ISO string (misal "2023-12-25T14:00:00.000Z")
-    status: 'PENDING' | 'CONFIRMED' | 'CANCELLED'; // Status booking
+    bookingTime: string; // ISO string
+    status: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED';
     serviceId: string;
-    // createdAt?: string; 
+    createdAt?: string;
+    updatedAt?: string;
+
+    // PENTING: Ini harus ada agar tidak merah saat mengakses b.service.name
+    service?: Service | null; 
 }
 
 export interface User {
     id: string;
     username: string;
+    role: string;
 }
 
-// Tipe data untuk respons sukses dari API login
-export interface AuthResponse {
-    token: string;
-    admin: User;
+// Tipe standar untuk respon API
+export interface ApiResponse<T = null> {
     message: string;
-}
-
-// Tipe dasar untuk respons yang hanya berisi pesan
-export interface MessageResponse {
-    message: string;
+    data: T;
+    token?: string;
+    user?: User;
 }

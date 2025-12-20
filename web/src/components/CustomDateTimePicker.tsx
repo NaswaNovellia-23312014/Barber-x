@@ -1,14 +1,10 @@
-// web/src/components/CustomDateTimePicker.tsx
 'use client';
 
 import * as React from 'react';
 import { useState, useEffect, useMemo } from 'react';
-
-// date-fns imports
 import { format, getDay, setHours, setMinutes, isToday } from 'date-fns';
 import parseISO from 'date-fns/parseISO'; 
 
-// === KOMPONEN SHADCN UI ===
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar'; 
@@ -35,11 +31,14 @@ export default function CustomDateTimePicker({
   const [fetchingBookings, setFetchingBookings] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
+  // Mencegah kesalahan hidrasi antara server dan client
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  // Ambil data booking untuk tanggal yang dipilih dari backend
+  /**
+   * Mengambil data pemesanan untuk mengecek slot yang sudah terisi.
+   */
   useEffect(() => {
     if (!isClient || !selectedDate) { 
         setBookedTimes(new Set()); 
@@ -52,32 +51,26 @@ export default function CustomDateTimePicker({
         const formattedDate = format(selectedDate, 'yyyy-MM-dd'); 
         const res = await fetch(`${API_URL}/bookings?date=${formattedDate}`);
         
-        if (!res.ok) {
-          const errorBody = await res.text();
-          throw new Error(`Gagal mengambil data booking: ${res.status} ${res.statusText}, Body: ${errorBody}`);
-        }
+        if (!res.ok) throw new Error(`Failed to fetch bookings`);
         
         const data: Booking[] = await res.json();
-
         const newBookedTimes = new Set<string>();
+
         data.forEach(booking => {
             if (typeof booking.bookingTime === 'string') {
               try {
                   const bookingDateTime = parseISO(booking.bookingTime);
                   if (bookingDateTime instanceof Date && !isNaN(bookingDateTime.getTime())) {
-                    const timeSlot = format(bookingDateTime, 'HH:mm');
-                    newBookedTimes.add(timeSlot);
+                    newBookedTimes.add(format(bookingDateTime, 'HH:mm'));
                   }
-              } catch (parseError) {
-                  console.error('Error parsing bookingTime string:', booking.bookingTime, parseError);
+              } catch (e) {
+                  console.error('Parse error:', e);
               }
             }
         });
         setBookedTimes(newBookedTimes);
-
       } catch (error) {
-        console.error('Error fetching bookings:', error);
-        toast.error(`Gagal memuat booking: ${error instanceof Error ? error.message : String(error)}`);
+        toast.error('Failed to load time slots.');
         setBookedTimes(new Set());
       } finally {
         setFetchingBookings(false);
@@ -87,13 +80,9 @@ export default function CustomDateTimePicker({
     fetchBookingsForDate();
   }, [selectedDate, isClient]); 
 
-  
   const handleDateChange = (date: Date | undefined) => {
     onSelectDate(date); 
-    
-    if (date) { 
-        setIsPopoverOpen(false); 
-    }
+    if (date) setIsPopoverOpen(false); 
   };
 
   const handleTimeSlotClick = (slotTime: string) => {
@@ -105,22 +94,18 @@ export default function CustomDateTimePicker({
     onSelectDate(fullSelectedDateTime);
   };
   
-  // Generate semua slot waktu yang mungkin
+  // Menghasilkan slot waktu (09:00 - 21:00)
   const allPossibleTimeSlots = useMemo(() => {
     const slots: string[] = [];
-    const startHour = 9;
-    const endHour = 21; 
-    const intervalMinutes = 30;
-
-    for (let h = startHour; h < endHour; h++) {
-      for (let m = 0; m < 60; m += intervalMinutes) {
+    for (let h = 9; h < 21; h++) {
+      for (let m = 0; m < 60; m += 30) {
         slots.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
       }
     }
     return slots;
   }, []);
 
-  // Filter slot waktu yang ditampilkan
+  // Filter slot waktu berdasarkan ketersediaan dan waktu sekarang
   const filteredTimeSlots = useMemo(() => {
     if (!isClient || !selectedDate) return []; 
 
@@ -129,18 +114,10 @@ export default function CustomDateTimePicker({
     const isTodaySelected = isToday(selectedDate);
 
     return allPossibleTimeSlots.map(slotTime => {
-        let isDisabled = false;
-
-        if (bookedTimes.has(slotTime)) {
+        let isDisabled = bookedTimes.has(slotTime);
+        if (isTodaySelected && slotTime < currentHourMinute) {
             isDisabled = true;
         }
-
-        if (isTodaySelected) {
-            if (slotTime < currentHourMinute) {
-                isDisabled = true;
-            }
-        }
-        
         return { time: slotTime, isBooked: isDisabled };
     });
   }, [allPossibleTimeSlots, selectedDate, bookedTimes, isClient]);
@@ -150,80 +127,98 @@ export default function CustomDateTimePicker({
     return day !== 0 && day !== 6; 
   };
 
-  // === SOLUSI HYDRATION ERROR ===
+  // State loading awal untuk mencegah hydration mismatch
   if (!isClient) {
       return (
-          <div className="space-y-4">
-              <Label className="block text-sm font-medium text-gray-700">Pilih Tanggal</Label>
-              <Button
-                  variant={"outline"}
-                  className="w-full justify-start text-left font-normal text-muted-foreground"
-                  disabled
-              >
+          <div className="space-y-1.5">
+              <Label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Select Date</Label>
+              <Button variant="outline" className="w-full justify-start py-6 rounded-2xl bg-gray-50 border-none" disabled>
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  <span>Memuat tanggal...</span>
+                  <span>Loading...</span>
               </Button>
           </div>
       );
   }
-  // ============================
     
   return (
-    <div className="space-y-4">
-      <Label className="block text-sm font-medium text-gray-700">Pilih Tanggal</Label>
-      
-      <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant={"outline"}
-            className={cn(
-              "w-full justify-start text-left font-normal",
-              !selectedDate && "text-muted-foreground"
-            )}
-            onClick={() => setIsPopoverOpen(true)}
-          >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {selectedDate ? format(selectedDate, "dd MMMM yyyy") : <span>Pilih tanggal</span>}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            mode="single"
-            selected={selectedDate} 
-            onSelect={handleDateChange} 
-            initialFocus
-            disabled={(date) => {
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                return !isWeekday(date) || date < today;
-            }} 
-          />
-        </PopoverContent>
-      </Popover>
+    <div className="space-y-5">
+      {/* Bagian Pemilihan Tanggal */}
+      <div className="space-y-1.5">
+        <Label className="text-[10px] font-black uppercase tracking-widest text-black ml-2">
+          Select Date
+        </Label>
+        
+        <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn(
+                "w-full justify-start text-left font-bold py-6 px-5 rounded-2xl border-none bg-gray-50 transition-all focus:ring-3 focus:ring-gray-200",
+                !selectedDate && "text-gray-300"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4 text-black" />
+              {selectedDate ? format(selectedDate, "PPP") : <span>Choose a date</span>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0 rounded-3xl overflow-hidden shadow-2xl border-none" align="start">
+            <Calendar
+              mode="single"
+              selected={selectedDate} 
+              onSelect={handleDateChange} 
+              initialFocus
+              disabled={(date) => {
+                  const today = new Date();
+                  today.setHours(0, 0, 0, 0);
+                  return !isWeekday(date) || date < today;
+              }} 
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
 
-      {/* Tampilkan slot waktu jika selectedDate ada */}
+      {/* Bagian Pemilihan Waktu */}
       {selectedDate && (
-        <div className="mt-4">
-          <Label className="block text-sm font-medium text-gray-700 mb-2">Pilih Waktu ({format(selectedDate, 'dd MMM yyyy')}):</Label>
+        <div className="space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
+          <Label className="text-[10px] font-black uppercase tracking-widest text-black ml-2">
+            Available Time ({format(selectedDate, 'MMM dd')})
+          </Label>
+          
           {fetchingBookings ? (
-            <p className="text-gray-500">Memuat slot waktu...</p>
+            <div className="flex items-center gap-2 text-black font-bold text-xs p-4 bg-gray-50 rounded-2xl">
+               <div className="w-3 h-3 border-2 border-t-transparent border-black rounded-full animate-spin" />
+               Fetching availability...
+            </div>
           ) : filteredTimeSlots.length > 0 ? (
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 max-h-48 overflow-y-auto pr-2">
-              {filteredTimeSlots.map((slot) => (
-                <Button
-                  key={slot.time}
-                  type="button"
-                  variant={selectedDate && format(selectedDate, 'HH:mm') === slot.time ? 'default' : 'outline'}
-                  onClick={() => handleTimeSlotClick(slot.time)}
-                  disabled={slot.isBooked} 
-                  className="px-2 py-1 text-xs"
-                >
-                  {slot.time}
-                </Button>
-              ))}
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+              {filteredTimeSlots.map((slot) => {
+                const isSelected = selectedDate ? format(selectedDate, 'HH:mm') === slot.time : false;
+
+                return (
+                  <Button
+                    key={slot.time}
+                    type="button"
+                    // Jika terpilih, paksa variant default (hitam), jika tidak pakai outline
+                    variant={isSelected ? 'default' : 'outline'}
+                    onClick={() => handleTimeSlotClick(slot.time)}
+                    disabled={slot.isBooked} 
+                    className={cn(
+                      "rounded-xl font-bold py-5 transition-all text-sm border",
+                      isSelected 
+                        ? "bg-gray-900 text-white border-gray-900 shadow-lg scale-105 z-10" // State terpilih: Hitam pekat
+                        : "bg-white text-gray-600 border-gray-200 hover:border-gray-200 hover:text-black", // State biasa
+                      slot.isBooked && "bg-gray-50 text-gray-300 border-none opacity-50 cursor-not-allowed" // State penuh
+                    )}
+                  >
+                    {slot.time}
+                  </Button>
+                );
+              })}
             </div>
           ) : (
-            <p className="text-gray-500">Tidak ada slot waktu tersedia untuk tanggal ini.</p>
+            <p className="text-gray-400 text-xs font-bold p-4 bg-gray-50 rounded-2xl text-center">
+                No slots available for this date.
+            </p>
           )}
         </div>
       )}

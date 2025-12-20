@@ -40,10 +40,10 @@ export default async function BookingPage() {
 
   return (
     <div className="container mx-auto p-4 max-w-lg">
-      <h1 className="text-3xl font-bold mb-6 text-center">Buat Booking Baru</h1>
+      <h1 className="text-2xl font-black uppercase tracking-tighter text-center mb-14"></h1>
       {/* Tampilkan pesan jika tidak ada layanan, atau BookingForm jika ada */}
       {services.length === 0 ? (
-        <p className="text-red-500 text-center">Tidak dapat memuat layanan atau tidak ada layanan tersedia.</p>
+        <p className="text-red-500 text-center">Unable to load service or no service available.</p>
       ) : (
         <BookingForm services={services} />
       )}

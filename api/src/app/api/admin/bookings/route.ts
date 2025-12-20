@@ -5,22 +5,31 @@ import type { NextRequest } from 'next/server';
 
 // Fungsi: GET (Mengambil semua data Booking)
 export async function GET(request: NextRequest) {
-    const authResult = verifyToken(request);
-    if (authResult instanceof NextResponse) {
-        return authResult;
-    }
-    
+    const { searchParams } = new URL(request.url);
+    const tab = searchParams.get('tab');
+
     try {
-        const bookings = await prisma.booking.findMany(); 
+        let whereClause = {};
 
-        return NextResponse.json({
-            message: "Data Bookings berhasil diambil.",
-            data: bookings
-        }, { status: 200 });
+        if (tab === 'riwayat') {
+            whereClause = { status: { in: ['COMPLETED', 'CANCELLED'] } };
+        } else if (tab === 'antrean') {
+            whereClause = { status: { in: ['PENDING', 'CONFIRMED'] } };
+        } 
+        // Jika tab kosong, tarik semua data (Booking + History)
+        else {
+            whereClause = {}; 
+        }
 
+        const bookings = await prisma.booking.findMany({
+            where: whereClause,
+            include: { service: true },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        return NextResponse.json({ data: bookings });
     } catch (error) {
-        console.error('API GET Booking Error:', error);
-        return new NextResponse('Gagal mengambil data Booking.', { status: 500 });
+        return new NextResponse('Gagal memuat data', { status: 500 });
     }
 }
 

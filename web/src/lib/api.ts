@@ -7,6 +7,11 @@ interface MessageResponse {
   message: string;
 }
 
+// Interface untuk menangkap respon nested dari API 
+interface ServiceResponse {
+  service: Service;
+}
+
 async function authenticatedFetcher<T>(
   path: string, 
   options: RequestInit = {}, 
@@ -26,7 +31,7 @@ async function authenticatedFetcher<T>(
     if (requireAuth) {
         const token = getAuthToken();
         if (!token) {
-            throw new Error('UNAUTHENTICATED: No token found. Please log in.');
+            throw new Error('UNAUTHENTICATED: No token found.');
         }
         headers['Authorization'] = `Bearer ${token}`; 
     }
@@ -34,67 +39,58 @@ async function authenticatedFetcher<T>(
     const response = await fetch(url, { ...options, headers });
 
     if (response.status === 401 && requireAuth) {
-        throw new Error('UNAUTHORIZED: Token invalid or expired. Please log in again.');
+        throw new Error('UNAUTHORIZED: Token expired.');
     }
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: response.statusText }));
-        throw new Error((errorData as MessageResponse).message || 'Terjadi kesalahan saat memanggil API.');
+        throw new Error((errorData as MessageResponse).message || 'API Error');
     }
 
-    if (response.status === 204) {
-        return null as T;
-    }
+    if (response.status === 204) return null as T;
 
-    const jsonResponse = await response.json();
-    return jsonResponse;
+    return await response.json();
 }
 
+// ADMIN API FUNCTIONS
 
-// --- FUNGSI ADMIN API KHUSUS ---
-
-// LOGIN
 export async function loginAdmin(username: string, password: string): Promise<{ token: string, admin: User }> {
-  const response = await authenticatedFetcher<{ token: string, admin: User }>('/login', {
+  return await authenticatedFetcher<{ token: string, admin: User }>('/login', {
     method: 'POST',
     body: JSON.stringify({ username, password }),
   }, false); 
-  return response;
 }
 
-// SERVICES - READ
 export async function getAdminServices(): Promise<Service[]> {
   const response = await authenticatedFetcher<{ data: Service[] }>('/admin/services', {}, true);
   return response.data;
 }
 
-// SERVICES - CREATE
 export async function createService(serviceData: Omit<Service, 'id' | 'createdAt' | 'updatedAt'>): Promise<Service> {
-  const response = await authenticatedFetcher<{ service: Service }>('/admin/services', {
+  const response = await authenticatedFetcher<ServiceResponse>('/admin/services', {
     method: 'POST',
     body: JSON.stringify(serviceData),
   }, true);
-  return response.service || (response as Service);
+  // Ambil service dari dalam objek { service: {...} }
+  return response.service;
 }
 
-// SERVICES - UPDATE
 export async function updateService(id: string, serviceData: Partial<Service>): Promise<Service> {
-  const response = await authenticatedFetcher<{ service: Service }>('/admin/services?id=' + id, {
+  const response = await authenticatedFetcher<ServiceResponse>(`/admin/services?id=${id}`, {
     method: 'PUT',
     body: JSON.stringify(serviceData),
   }, true);
-  return response.service || (response as Service);
+  return response.service;
 }
 
-// SERVICES - DELETE
 export async function deleteService(id: string): Promise<void> {
-  await authenticatedFetcher<MessageResponse>('/admin/services?id=' + id, {
+  await authenticatedFetcher<MessageResponse>(`/admin/services?id=${id}`, {
     method: 'DELETE',
   }, true);
-  return; 
 }
 
-// BOOKINGS - READ
+// BOOKINGS API 
+
 export async function getAdminBookings(): Promise<Booking[]> {
     const response = await authenticatedFetcher<{ data: Booking[] }>('/admin/bookings', {
         cache: 'no-store'
@@ -102,22 +98,16 @@ export async function getAdminBookings(): Promise<Booking[]> {
     return response.data; 
 }
 
-// BOOKINGS - UPDATE STATUS
-export async function updateBookingStatus(
-    id: string, 
-    data: { status: Booking['status'] }
-): Promise<Booking> {
-    const response = await authenticatedFetcher<{ booking: Booking }>('/admin/bookings?id=' + id, {
-        method: 'PUT',
-        body: JSON.stringify(data),
-    }, true);
-    return response.booking || (response as Booking);
+export async function updateBookingStatus(id: string, data: { status: string }) {
+  // Menggunakan PUT dan query param ?id= sesuai backend kamu
+  return await authenticatedFetcher<MessageResponse>(`/admin/bookings?id=${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  }, true);
 }
 
-// BOOKINGS - DELETE
 export async function deleteBooking(id: string): Promise<void> {
-    await authenticatedFetcher<MessageResponse>('/admin/bookings?id=' + id, {
+    await authenticatedFetcher<MessageResponse>(`/admin/bookings?id=${id}`, {
         method: 'DELETE',
     }, true);
-    return;
 }
