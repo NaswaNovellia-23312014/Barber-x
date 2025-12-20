@@ -18,6 +18,10 @@ export default function Footer() {
           </p>
         </div>
 
+        <ul className="flex flex-col gap-3 text-sm">
+           
+          </ul>
+
         {/* CONTACT */}
         <div>
           <h3 className="font-semibold text-lg mb-4 text-[#C8A36A]">Contact</h3>
