@@ -51,32 +51,26 @@ export default function CustomDateTimePicker({
         const formattedDate = format(selectedDate, 'yyyy-MM-dd'); 
         const res = await fetch(`${API_URL}/bookings?date=${formattedDate}`);
         
-        if (!res.ok) {
-          const errorBody = await res.text();
-          throw new Error(`Gagal mengambil data booking: ${res.status} ${res.statusText}, Body: ${errorBody}`);
-        }
+        if (!res.ok) throw new Error(`Failed to fetch bookings`);
         
         const data: Booking[] = await res.json();
-
         const newBookedTimes = new Set<string>();
+
         data.forEach(booking => {
             if (typeof booking.bookingTime === 'string') {
               try {
                   const bookingDateTime = parseISO(booking.bookingTime);
                   if (bookingDateTime instanceof Date && !isNaN(bookingDateTime.getTime())) {
-                    const timeSlot = format(bookingDateTime, 'HH:mm');
-                    newBookedTimes.add(timeSlot);
+                    newBookedTimes.add(format(bookingDateTime, 'HH:mm'));
                   }
-              } catch (parseError) {
-                  console.error('Error parsing bookingTime string:', booking.bookingTime, parseError);
+              } catch (e) {
+                  console.error('Parse error:', e);
               }
             }
         });
         setBookedTimes(newBookedTimes);
-
       } catch (error) {
-        console.error('Error fetching bookings:', error);
-        toast.error(`Gagal memuat booking: ${error instanceof Error ? error.message : String(error)}`);
+        toast.error('Failed to load time slots.');
         setBookedTimes(new Set());
       } finally {
         setFetchingBookings(false);
@@ -86,13 +80,9 @@ export default function CustomDateTimePicker({
     fetchBookingsForDate();
   }, [selectedDate, isClient]); 
 
-  
   const handleDateChange = (date: Date | undefined) => {
     onSelectDate(date); 
-    
-    if (date) { 
-        setIsPopoverOpen(false); 
-    }
+    if (date) setIsPopoverOpen(false); 
   };
 
   const handleTimeSlotClick = (slotTime: string) => {
