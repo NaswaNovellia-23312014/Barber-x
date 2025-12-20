@@ -5,17 +5,13 @@ import { Button } from "@/components/ui/button";
 export default function Home() {
   return (
     <div className="w-full mt-8 pt-24">
-      {/* Hero Section */}
+      {/* ================= HERO ================= */}
       <section
         className="w-full h-[80vh] bg-cover bg-center relative"
-        style={{
-          backgroundImage: "url('/images/cutt.jpg')",
-        }}
+        style={{ backgroundImage: "url('/images/cutt.jpg')" }}
       >
-        {/* Overlay gelap */}
         <div className="absolute inset-0 bg-black/50"></div>
 
-        {/* Teks */}
         <div className="relative z-10 h-full flex flex-col justify-center items-center text-center px-4">
           <h1 className="text-4xl md:text-6xl font-bold text-[#E9DFC7] drop-shadow-lg">
             Welcome To Barber-X
@@ -34,7 +30,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ABOUT SECTION */}
+      {/* ================= ABOUT ================= */}
       <section
         id="about"
         className="w-full bg-[#0E0E0E] px-6 md:px-16 py-32 mt-10"
@@ -57,19 +53,10 @@ export default function Home() {
 
             <div className="grid grid-cols-2 gap-6 mt-8">
               {[
-                [
-                  "Professional",
-                  "Skilled barbers with experience and passion.",
-                ],
-                [
-                  "Premium Service",
-                  "High quality tools and grooming products.",
-                ],
+                ["Professional", "Skilled barbers with experience and passion."],
+                ["Premium Service", "High quality tools and grooming products."],
                 ["Comfort Space", "Relaxing place with modern interior."],
-                [
-                  "Best Experience",
-                  "Grooming experience that boosts confidence.",
-                ],
+                ["Best Experience", "Grooming experience that boosts confidence."],
               ].map(([title, desc]) => (
                 <div key={title}>
                   <h4 className="text-[#C8A36A] font-semibold text-lg">
@@ -90,12 +77,22 @@ export default function Home() {
               height={350}
               className="rounded-xl shadow-2xl w-[380px] md:w-[480px] object-cover border-2 border-gray-300"
             />
-
-            <section id= "services">
-
-            </section>
           </div>
         </div>
+      </section>
+
+      {/* ================= CATALOG ================= */}
+      <section
+        id="services"
+        className="w-full bg-[#FAF7F2] px-6 md:px-16 py-32"
+      >
+        <div className="text-center mb-14">
+          <h2 className="text-3xl md:text-5xl font-bold text-[#3F3F3F]">
+            OUR SERVICES
+          </h2>
+          
+        </div>
+        
       </section>
     </div>
   );
