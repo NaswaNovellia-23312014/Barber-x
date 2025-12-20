@@ -1,9 +1,12 @@
 export interface Service {
     id: string;
     name: string;
-    description: string;
+    description?: string | null; // Opsional
     price: number;
-    duration: number; // Durasi layanan dalam menit
+    duration: number;
+    imageUrl?: string | null; // Opsional
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export interface Booking {
