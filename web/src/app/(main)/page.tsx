@@ -105,6 +105,10 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          {[
+  ["Haircut", "Rp 30.000", "/images/haircutt.png"],
+  
+].map(() => null)}
 </div>
       </section>
     </div>
