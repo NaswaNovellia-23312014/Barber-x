@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import AuthClientWrapper from '@/components/AuthClientWrapper';
+import Image from 'next/image';
 import { setAuthData } from '@/lib/auth'; 
 
 const API_URL = "http://localhost:3007/api";
@@ -44,18 +45,16 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const handleSubmit = async (
-    e: React.FormEvent,
-    authFunctions: {
-      saveAuthToken: (token: string) => void;
-    }
-  ) => {
+  /**
+   * Menangani proses submit form login.
+   */
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess('');
 
     if (!username || !password) {
-      setError('Username dan password harus diisi.');
+      setError('Username and password are required.');
       return;
     }
 
@@ -63,7 +62,11 @@ export default function LoginPage() {
     try {
       const response = await loginAdmin(username, password);
       
-      authFunctions.saveAuthToken(response.token);
+      // Menyimpan data autentikasi ke local storage/cookie via helper
+      setAuthData({
+        token: response.token,
+        admin: response.admin
+      });
       
       setSuccess(`Login berhasil! Selamat datang, ${response.admin.username}.`);
       
