@@ -54,6 +54,20 @@ export default function Home() {
               Barber-X is a premium barbershop delivering a modern grooming
               experience with comfort, precision, and professional service.
             </p>
+
+            <div className="grid grid-cols-2 gap-6 mt-8">
+              {[
+                ["Professional", "Skilled barbers with experience and passion."],
+                
+              ].map(([title, desc]) => (
+                <div key={title}>
+                  <h4 className="text-[#C8A36A] font-semibold text-lg">
+                    {title}
+                  </h4>
+                  <p className="text-sm text-gray-400">{desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Kanan – Gambar */}
