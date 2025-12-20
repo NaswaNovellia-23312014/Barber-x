@@ -25,6 +25,7 @@ export default function Footer() {
 
         <div className="space-y-3 text-sm text-gray-400">
             <p>📞 WhatsApp: 0812-3456-7890</p>
+            <p>📸 Instagram: @barberx.id</p>
           </div>
 
       </div>
