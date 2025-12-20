@@ -185,6 +185,10 @@ export default function LoginPage() {
                 </button>
               </form>
             </div>
+            
+            <p className="text-center mt-8 text-gray-400 text-[10px] font-bold uppercase tracking-widest">
+              &copy; 2025 BarberX Management System
+            </p>
           </div>
         </div>
       )}
