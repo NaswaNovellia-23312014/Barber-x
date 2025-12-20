@@ -2,11 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-
 export default function Home() {
   return (
     <div className="w-full mt-8 pt-24">
-
       {/* Hero Section */}
       <section
         className="w-full h-[80vh] bg-cover bg-center relative"
@@ -33,20 +31,18 @@ export default function Home() {
               Booking Now!
             </Button>
           </Link>
-
         </div>
       </section>
 
       {/* ABOUT SECTION */}
-<section
-  id="about"
-  className="w-full bg-[#0E0E0E] px-6 md:px-16 py-32 mt-10"
->
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-
-    {/* Kiri – Teks */}
-    <div className="text-center md:text-left">
-      <span className="text-sm tracking-widest text-[#C8A36A] uppercase">
+      <section
+        id="about"
+        className="w-full bg-[#0E0E0E] px-6 md:px-16 py-32 mt-10"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          {/* Kiri – Teks */}
+          <div className="text-center md:text-left">
+            <span className="text-sm tracking-widest text-[#C8A36A] uppercase">
               About Us
             </span>
 
@@ -54,26 +50,24 @@ export default function Home() {
               More Than Just a Haircut
             </h2>
 
+            <p className="text-gray-300 md:text-lg leading-relaxed">
+              Barber-X is a premium barbershop delivering a modern grooming
+              experience with comfort, precision, and professional service.
+            </p>
+          </div>
 
-      <p className="text-gray-300 leading-relaxed md:text-lg">
-        Barber-X is a premium barbershop offering a modern haircut experience with comfort, precision, and professional service.
-        We are committed to providing the best styles to boost your confidence.
-      </p>
-    </div>
-
-    {/* Kanan – Gambar */}
-    <div className="flex justify-center">
-      <Image
-      src="/images/cutt.jpg"
-      alt="About Barber-X"
-      width={480}
-      height={350}
-      className="rounded-xl shadow-2xl w-[380px] md:w-[480px] object-cover border-2 border-gray-300"
-    />
-    </div>
-  </div>
-</section>
-
+          {/* Kanan – Gambar */}
+          <div className="flex justify-center">
+            <Image
+              src="/images/cutt.jpg"
+              alt="About Barber-X"
+              width={480}
+              height={350}
+              className="rounded-xl shadow-2xl w-[380px] md:w-[480px] object-cover border-2 border-gray-300"
+            />
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
