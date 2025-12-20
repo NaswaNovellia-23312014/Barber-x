@@ -6,7 +6,9 @@ import { useState } from "react";
 
 
 export default function Navbar() {
-  return (
+  const [open, setOpen] = useState(false);
+  
+    return (
     <nav className="w-full bg-[#F5ECD6] shadow-md border-b border-black/10">
       <div className="max-w-7xl mx-auto flex items-center justify-between py-4 px-6">
 
