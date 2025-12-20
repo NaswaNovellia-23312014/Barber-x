@@ -25,7 +25,11 @@ export default function Footer() {
               { name: "Booking", href: "/booking" },
               { name: "About", href: "#about" },
               { name: "Contact", href: "#contact" },
-            ]}
+            ].map((item) => (
+              <li key={item.name}>
+                
+              </li>
+            ))}
           </ul>
 
         {/* CONTACT */}
