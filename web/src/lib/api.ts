@@ -44,23 +44,18 @@ async function authenticatedFetcher<T>(
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: response.statusText }));
-        throw new Error((errorData as MessageResponse).message || 'Terjadi kesalahan saat memanggil API.');
+        throw new Error((errorData as MessageResponse).message || 'API Error');
     }
 
-    if (response.status === 204) {
-        return null as T;
-    }
+    if (response.status === 204) return null as T;
 
-    const jsonResponse = await response.json();
-    return jsonResponse;
+    return await response.json();
 }
 
+// ADMIN API FUNCTIONS
 
-// --- FUNGSI ADMIN API KHUSUS ---
-
-// LOGIN
 export async function loginAdmin(username: string, password: string): Promise<{ token: string, admin: User }> {
-  const response = await authenticatedFetcher<{ token: string, admin: User }>('/login', {
+  return await authenticatedFetcher<{ token: string, admin: User }>('/login', {
     method: 'POST',
     body: JSON.stringify({ username, password }),
   }, false); 
