@@ -70,47 +70,44 @@ export default function BookingForm({ services }: BookingFormProps) {
         setIsLoading(true);
 
         if (!customerName || !customerPhone || !selectedServiceId || !selectedBookingTime) {
-
-    try {
-        const response = await fetch(`${API_URL}/bookings`, {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            customerName,
-            customerPhone,
-            serviceId: selectedServiceId,
-            bookingTime: selectedBookingTime.toISOString(), 
-        }),
-        });
-
-        const responseData = await response.json();
-
-        if (!response.ok) {
-        if (response.status === 409) {
-            toast.error(responseData.message || 'Slot booking bentrok. Pilih waktu lain.');
-        } else {
-            toast.error(responseData.message || 'Terjadi kesalahan saat membuat booking.');
-        }
-        return;
+            toast.error('Please complete all booking details.');
+            setIsLoading(false);
+            return;
         }
 
-        toast.success(responseData.message || 'Booking berhasil dibuat!');
-      // Reset form
-        setCustomerName('');
-        setCustomerPhone('');
-        setSelectedBookingTime(undefined); // Reset ke undefined
-        setSelectedServiceId(services[0]?.id || '');
+        try {
+            const response = await fetch(`${API_URL}/bookings`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    customerName,
+                    customerPhone,
+                    serviceId: selectedServiceId,
+                    bookingTime: selectedBookingTime.toISOString(), 
+                }),
+            });
+
+            const responseData = await response.json();
+
+            if (!response.ok) {
+                const errorMsg = response.status === 409 
+                    ? 'Booking slot conflict. Please choose another time.' 
+                    : (responseData.message || 'An error occurred.');
+                toast.error(errorMsg);
+                return;
+            }
+
+            toast.success(responseData.message || 'Booking created successfully!');
+            
+            // Reset form setelah berhasil
+            setCustomerName('');
+            setCustomerPhone('');
+            setSelectedBookingTime(undefined);
+            setSelectedServiceId(services[0]?.id || '');
         } catch (err: unknown) {
-        console.error('Booking submission error:', err);
-        let errorMessage = 'Gagal terhubung ke server. Pastikan backend berjalan.';
-        if (err instanceof Error) {
-            errorMessage = err.message || errorMessage;
-        }
-        toast.error(errorMessage);
+            toast.error('Server connection failed.');
         } finally {
-        setIsLoading(false);
+            setIsLoading(false);
         }
     };
 
