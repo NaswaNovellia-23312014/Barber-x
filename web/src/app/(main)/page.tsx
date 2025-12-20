@@ -24,7 +24,8 @@ export default function Home() {
           </h1>
 
           <p className="mt-4 text-sm md:text-lg text-gray-200 max-w-xl">
-            Barber-X is a Premium barbershop with professional service for your best style.
+            Barber-X is a Premium barbershop with professional service for your
+            best style.
           </p>
 
           <Link href="/booking">
