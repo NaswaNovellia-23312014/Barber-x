@@ -90,6 +90,9 @@ export default function Home() {
           <h2 className="text-3xl md:text-5xl font-bold text-[#3F3F3F]">
             OUR SERVICES
           </h2>
+          <p className="text-gray-500 mt-3">
+  Choose the best service for your style
+</p>
           
         </div>
         
