@@ -119,6 +119,9 @@ export default function Home() {
                 Professional service for your best style.
               </p>
               <span>{price}</span>
+              <Link href="/booking">
+                <Button>Book</Button>
+              </Link>
               <Image
                 src={img}
                 alt={title}
