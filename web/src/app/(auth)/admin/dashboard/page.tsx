@@ -1,89 +1,128 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { 
+  LayoutDashboard, 
+  Clock, 
+  CheckCircle2, 
+  RefreshCw, 
+  LogOut, 
+  Plus, 
+  Pencil, 
+  Trash2, 
+  Phone,
+  Calendar as CalendarIcon
+} from 'lucide-react';
 
-interface AdminData {
-  id: string;
-  username: string;
-}
+import { Booking, Service, User } from '@/types';
+import { getAdminUser, removeAuthData } from '@/lib/auth';
+import { 
+    getAdminBookings, 
+    getAdminServices, 
+    updateBookingStatus, 
+    deleteService,
+    createService,
+    updateService
+} from '@/lib/api';
+import { formatCurrency } from '@/lib/utils';
+import Image from 'next/image';
 
-interface BookingStats {
-  total: number;
-  pending: number;
-  completed: number;
-  cancelled: number;
-}
-
-export default function AdminDashboard() {
-  const [admin, setAdmin] = useState<AdminData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState<BookingStats>({
-    total: 0,
-    pending: 0,
-    completed: 0,
-    cancelled: 0
-  });
-  const [revenue, setRevenue] = useState(0);
+export default function AdminDashboardPage() {
   const router = useRouter();
+  
+  // --- STATE MANAGEMENT ---
+  const [user, setUser] = useState<User | null>(null);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
+  const [activeTab, setActiveTab] = useState<'ACTIVE' | 'COMPLETED'>('ACTIVE');
+  
+  // State untuk kontrol UI dan Modal
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingServiceId, setEditingServiceId] = useState<string | null>(null);
+  const [serviceFormData, setServiceFormData] = useState({
+      name: '', price: 0, duration: 0, description: ''
+  });
 
-  useEffect(() => {
-    // Cek apakah user sudah login
-    const token = localStorage.getItem('barberx_admin_token');
-    if (!token) {
-      router.push('/admin/login');
-      return;
-    }
+  /**
+   * Menormalisasi format status dari backend untuk memastikan konsistensi logika frontend.
+   */
+  const normalizeStatus = (status: string | undefined | null): string => {
+    if (!status) return '';
+    const s = String(status).toUpperCase().trim();
+    if (s === 'SELESAI' || s === 'SUCCESS' || s === 'DONE') return 'COMPLETED';
+    return s;
+  };
 
-    // Fetch admin data dan stats
-    const fetchDashboardData = async () => {
-      try {
-        // Simulasi data admin
-        const adminData: AdminData = {
-          id: '1',
-          username: 'admin'
-        };
-        
-        // Simulasi stats (nanti bisa dari API)
-        const statsData: BookingStats = {
-          total: 24,
-          pending: 8,
-          completed: 14,
-          cancelled: 2
-        };
+  /**
+   * Menghitung statistik pemesanan secara real-time untuk ditampilkan pada kartu informasi.
+   */
+  const stats = useMemo(() => {
+    const s = { total: 0, pending: 0, completed: 0 };
+    bookings.forEach(b => {
+      const status = normalizeStatus(b.status);
+      s.total++;
+      if (status === 'PENDING') s.pending++;
+      if (status === 'COMPLETED') s.completed++;
+    });
+    return s;
+  }, [bookings]);
 
-        setAdmin(adminData);
-        setStats(statsData);
-        setRevenue(2400000); // Rp 2.4 juta
-      } catch (error) {
-        console.error('Failed to fetch dashboard data:', error);
-        router.push('/admin/login');
-      } finally {
-        setLoading(false);
+  /**
+   * Menyaring data pemesanan yang ditampilkan berdasarkan tab aktif (Antrean dan Riwayat).
+   */
+  const filteredBookings = useMemo(() => {
+    return bookings.filter(b => {
+      const currentStatus = normalizeStatus(b.status);
+      if (activeTab === 'ACTIVE') {
+        return currentStatus !== 'COMPLETED' && currentStatus !== 'CANCELLED';
       }
-    };
+      return currentStatus === 'COMPLETED';
+    });
+  }, [bookings, activeTab]);
 
-    fetchDashboardData();
+  /**
+   * Mengambil data pemesanan dan layanan dari server secara paralel.
+   * Melakukan validasi token; jika tidak valid, pengguna diarahkan ke halaman login.
+   */
+  const loadData = useCallback(async (showFullLoading = true) => {
+    if (showFullLoading) setIsLoading(true);
+    try {
+        const currentUser = getAdminUser();
+        if (!currentUser) throw new Error('NO_TOKEN');
+        setUser(currentUser);
+
+        const [bookingsData, servicesData] = await Promise.all([
+            getAdminBookings(),
+            getAdminServices()
+        ]);
+        
+        setBookings(bookingsData || []);
+        setServices(servicesData || []);
+    } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        if (errorMessage.includes('TOKEN') || errorMessage.includes('UNAUTHORIZED')) {
+             removeAuthData(); 
+             router.replace('/admin/login');
+        }
+    } finally {
+        setIsLoading(false);
+        setIsRefreshing(false);
+    }
   }, [router]);
 
-  // Handle untuk manage bookings
-  const handleManageBookings = () => {
-    console.log('Navigating to bookings management...');
-    router.push('/admin/bookings');
-  };
-
-  // Handle untuk view services
-  const handleViewServices = () => {
-    console.log('Navigating to services management...');
-    router.push('/admin/services');
-  };
-
-  // Handle untuk customer data
-  const handleCustomerData = () => {
-    console.log('Navigating to customer data...');
-    // router.push('/admin/customers');
-    alert('Customer data feature coming soon!');
-  };
+  /**
+   * Menjalankan inisialisasi data dan menetapkan interval polling setiap 30 detik
+   * untuk memastikan data dashboard (real-time).
+   */
+  useEffect(() => {
+    loadData(true);
+    const interval = setInterval(() => {
+        loadData(false);
+    }, 30000); 
+    return () => clearInterval(interval);
 
   // Handle untuk reports
   const handleReports = () => {
