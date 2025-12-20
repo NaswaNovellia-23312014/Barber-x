@@ -58,6 +58,8 @@ export default function Home() {
             <div className="grid grid-cols-2 gap-6 mt-8">
               {[
                 ["Professional", "Skilled barbers with experience and passion."],
+                                ["Premium Service", "High quality tools and grooming products."],
+
                 
               ].map(([title, desc]) => (
                 <div key={title}>
