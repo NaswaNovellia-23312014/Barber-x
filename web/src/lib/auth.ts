@@ -16,59 +16,15 @@ export function setAuthData(data: AuthData) {
 }
 
 export function getAuthToken(): string | null {
-    if (typeof window !== 'undefined') {
-        try {
-            return localStorage.getItem(TOKEN_KEY);
-        } catch (error) {
-            console.error('Error reading token from Local Storage:', error);
-            return null;
-        }
-    }
-    return null;
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem(TOKEN_KEY);
 }
 
-/**
- * MENGATASI ERROR: Mengambil data user admin dari Local Storage.
- * Digunakan untuk menampilkan informasi user di Dashboard.
- * @returns Objek User atau null jika tidak ada.
- */
 export function getAdminUser(): User | null {
-    if (typeof window !== 'undefined') {
-        try {
-            const userJson = localStorage.getItem(USER_KEY);
-            if (userJson) {
-                // Parse string JSON kembali menjadi objek User
-                return JSON.parse(userJson) as User;
-            }
-            return null;
-        } catch (error) {
-            console.error('Error reading user data from Local Storage:', error);
-            // Hapus semua data otentikasi jika gagal parsing (data rusak)
-            removeAuthData(); 
-            return null;
-        }
-    }
-    return null;
+  if (typeof window === 'undefined') return null;
+  const data = localStorage.getItem(ADMIN_KEY);
+  return data ? JSON.parse(data) : null;
 }
-
-/**
- * MENGATASI ERROR: Menghapus semua data otentikasi (token dan user) dari Local Storage.
- * Ini adalah fungsi utama untuk Logout.
- */
-export function removeAuthData(): void {
-    if (typeof window !== 'undefined') {
-        try {
-            localStorage.removeItem(TOKEN_KEY);
-            localStorage.removeItem(USER_KEY);
-        } catch (error) {
-            console.error('Error removing auth data from Local Storage:', error);
-        }
-    }
-}
-
-/**
- * Mengecek status otentikasi dasar (apakah token dan user ada).
- */
 export function checkAuthStatus(): boolean {
     const token = getAuthToken();
     const user = getAdminUser();
