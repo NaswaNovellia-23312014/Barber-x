@@ -110,7 +110,9 @@ export default function Home() {
             ["Haircut + Wash", "Rp 40.000", "/images/wash.png"],
             ["Beard Trim", "Rp 25.000", "/images/beard.png"],
           ].map(([title, price, img]) => (
-            <div key={title} className="bg-white rounded-2xl">
+            <div key={title} 
+              className="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden max-w-[300px] mx-auto">
+
               <h3>{title}</h3>
               <span>{price}</span>
               <Image
