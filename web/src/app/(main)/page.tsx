@@ -106,14 +106,16 @@ export default function Home() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {[
-  ["Haircut", "Rp 30.000", "/images/haircutt.png"],
-    ["Haircut + Wash", "Rp 40.000", "/images/wash.png"],
-      ["Beard Trim", "Rp 25.000", "/images/beard.png"],
-
-
-  
-].map(() => null)}
-</div>
+            ["Haircut", "Rp 30.000", "/images/haircutt.png"],
+            ["Haircut + Wash", "Rp 40.000", "/images/wash.png"],
+            ["Beard Trim", "Rp 25.000", "/images/beard.png"],
+          ].map(([title, price, img]) => (
+            <div key={title} className="bg-white rounded-2xl">
+              <h3>{title}</h3>
+              <span>{price}</span>
+            </div>
+          ))}
+        </div>
       </section>
     </div>
   );
