@@ -224,114 +224,123 @@ export default function AdminDashboardPage() {
             </button>
           </div>
         </div>
+
+        {/* Tanggal */}
+        <div className="border-t mt-6 pt-4">
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+          </span>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="border-4 border-dashed border-gray-200 rounded-lg p-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-              Dashboard Admin
-            </h2>
-            
-            {/* Stats Cards dengan Filter */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">Total Bookings</h3>
-                <p className="text-3xl font-bold text-blue-600">{stats.total}</p>
-                <p className="text-sm text-gray-500 mt-2">+5 from last week</p>
-                <button
-                  onClick={() => handleStatsFilter('all')}
-                  className="mt-2 text-blue-500 hover:text-blue-700 text-sm"
-                >
-                  View All
-                </button>
-              </div>
-              
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">Pending</h3>
-                <p className="text-3xl font-bold text-yellow-600">{stats.pending}</p>
-                <p className="text-sm text-gray-500 mt-2">Need confirmation</p>
-                <button
-                  onClick={() => handleStatsFilter('pending')}
-                  className="mt-2 text-yellow-500 hover:text-yellow-700 text-sm"
-                >
-                  View Pending
-                </button>
-              </div>
-              
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">Completed</h3>
-                <p className="text-3xl font-bold text-green-600">{stats.completed}</p>
-                <p className="text-sm text-gray-500 mt-2">This month</p>
-                <button
-                  onClick={() => handleStatsFilter('completed')}
-                  className="mt-2 text-green-500 hover:text-green-700 text-sm"
-                >
-                  View Completed
-                </button>
-              </div>
-              
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">Revenue</h3>
-                <p className="text-3xl font-bold text-purple-600">
-                  Rp {revenue.toLocaleString('id-ID')}
-                </p>
-                <p className="text-sm text-gray-500 mt-2">This month</p>
-                <button
-                  onClick={handleReports}
-                  className="mt-2 text-purple-500 hover:text-purple-700 text-sm"
-                >
-                  View Report
-                </button>
-              </div>
-            </div>
+      {/* BAGIAN KARTU STATISTIK */}
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
+        <div className="bg-white p-8 rounded-[32px] shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
+          <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-3">
+            <CalendarIcon className="w-6 h-6" />
+          </div>
+          <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest">Total Bookings</p>
+          <h3 className="text-4xl font-black mt-1">{stats.total}</h3>
+        </div>
 
-            {/* Quick Actions */}
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <button 
-                  onClick={handleManageBookings}
-                  className="bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-lg transition duration-200 flex flex-col items-center justify-center"
-                >
-                  <svg className="w-6 h-6 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                  </svg>
-                  Manage Bookings
-                </button>
-                
-                <button 
-                  onClick={handleViewServices}
-                  className="bg-green-500 hover:bg-green-600 text-white p-4 rounded-lg transition duration-200 flex flex-col items-center justify-center"
-                >
-                  <svg className="w-6 h-6 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                  </svg>
-                  View Services
-                </button>
-                
-                <button 
-                  onClick={handleCustomerData}
-                  className="bg-purple-500 hover:bg-purple-600 text-white p-4 rounded-lg transition duration-200 flex flex-col items-center justify-center"
-                >
-                  <svg className="w-6 h-6 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                  </svg>
-                  Customer Data
-                </button>
-                
-                <button 
-                  onClick={handleReports}
-                  className="bg-orange-500 hover:bg-orange-600 text-white p-4 rounded-lg transition duration-200 flex flex-col items-center justify-center"
-                >
-                  <svg className="w-6 h-6 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                  Reports
-                </button>
-              </div>
+        <div className="bg-white p-8 rounded-[32px] shadow-sm border border-yellow-100 ring-2 ring-yellow-500/5 flex flex-col items-center justify-center text-center">
+          <div className="w-12 h-12 bg-yellow-50 text-yellow-600 rounded-2xl flex items-center justify-center mb-3">
+            <Clock className="w-6 h-6" />
+          </div>
+          <p className="text-yellow-600 text-[10px] font-black uppercase tracking-widest">Pending Approval</p>
+          <h3 className="text-4xl font-black mt-1 text-yellow-600">{stats.pending}</h3>
+        </div>
+
+        <div className="bg-white p-8 rounded-[32px] shadow-sm border border-green-100 ring-2 ring-green-500/5 flex flex-col items-center justify-center text-center">
+          <div className="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center mb-3">
+            <CheckCircle2 className="w-6 h-6" />
+          </div>
+          <p className="text-green-600 text-[10px] font-black uppercase tracking-widest">Services Completed</p>
+          <h3 className="text-4xl font-black mt-1 text-green-600">{stats.completed}</h3>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        {/* PANEL KIRI: TABEL PEMESANAN */}
+        <div className="lg:col-span-8 bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden">
+          <div className="flex border-b">
+            <button 
+              onClick={() => setActiveTab('ACTIVE')}
+              className={`flex-1 py-5 text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'ACTIVE' ? 'text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50/30' : 'text-gray-400 hover:bg-gray-50'}`}
+            >
+              Queue & Active ({bookings.filter(b => normalizeStatus(b.status) !== 'COMPLETED').length})
+            </button>
+            <button 
+              onClick={() => setActiveTab('COMPLETED')}
+              className={`flex-1 py-5 text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'COMPLETED' ? 'text-green-600 border-b-2 border-green-600 bg-green-50/30' : 'text-gray-400 hover:bg-gray-50'}`}
+            >
+              Completed History ({stats.completed})
+            </button>
+          </div>
+
+          <div className="p-6">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-separate border-spacing-y-3">
+                <thead>
+                  <tr className="text-gray-400 text-[10px] font-black uppercase tracking-widest">
+                    <th className="px-4 py-2">Customer</th>
+                    <th className="px-4 py-2">Service & Schedule</th>
+                    <th className="px-4 py-2 text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredBookings.length === 0 ? (
+                    <tr>
+                      <td colSpan={3} className="text-center py-20 text-gray-400 italic text-sm">
+                        No bookings found in this section.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredBookings.map(b => (
+                      <tr key={b.id} className="bg-white hover:bg-gray-50/50 transition-colors">
+                        <td className="px-4 py-4 rounded-l-2xl border-y border-l border-gray-100">
+                          <div className="font-bold text-gray-900">{b.customerName}</div>
+                          <div className="text-[10px] text-gray-500 flex items-center gap-1 mt-1 font-medium">
+                            <Phone className="w-3 h-3"/> {b.customerPhone}
+                          </div>
+                        </td>
+                        <td className="px-4 py-4 border-y border-gray-100">
+                          <div className="text-sm font-bold text-indigo-600">{b.service?.name || 'Service Deleted'}</div>
+                          <div className="text-[10px] text-gray-400 mt-1 font-bold">
+                            {new Date(b.bookingTime).toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' })} • {new Date(b.bookingTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                          </div>
+                        </td>
+                        <td className="px-4 py-4 rounded-r-2xl border-y border-r border-gray-100 text-center">
+                          <select 
+                            value={normalizeStatus(b.status)}
+                            onChange={(e) => handleStatusChange(b.id, e.target.value)}
+                            className={`text-[10px] font-black px-3 py-2 rounded-full border-none ring-1 cursor-pointer outline-none transition-all
+                              ${normalizeStatus(b.status) === 'CONFIRMED' ? 'ring-green-500 bg-green-50 text-green-700' : 
+                                normalizeStatus(b.status) === 'PENDING' ? 'ring-yellow-500 bg-yellow-50 text-yellow-700' :
+                                normalizeStatus(b.status) === 'COMPLETED' ? 'ring-blue-500 bg-blue-50 text-blue-700' : 
+                                'ring-red-500 bg-red-50 text-red-700'}`}
+                          >
+                            <option value="PENDING">PENDING</option>
+                            <option value="CONFIRMED">CONFIRMED</option>
+                            <option value="COMPLETED">COMPLETED</option>
+                            <option value="CANCELLED">CANCELLED</option>
+                          </select>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
             </div>
 
             {/* Recent Activity */}
