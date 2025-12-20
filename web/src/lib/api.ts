@@ -7,6 +7,11 @@ interface MessageResponse {
   message: string;
 }
 
+// Interface untuk menangkap respon nested dari API 
+interface ServiceResponse {
+  service: Service;
+}
+
 async function authenticatedFetcher<T>(
   path: string, 
   options: RequestInit = {}, 
