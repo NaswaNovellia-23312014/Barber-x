@@ -112,51 +112,91 @@ export default function BookingForm({ services }: BookingFormProps) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-2">
-                <Label htmlFor="customerName">Nama Pelanggan</Label>
-                <Input
-                    id="customerName"
-                    type="text"
-                    placeholder="Masukkan Nama Anda"
-                    value={customerName}
-                    onChange={(e) => setCustomerName(filterNama(e.target.value))}
-                    disabled={isLoading}
-                />
-            </div>
+  <Card className="w-full max-w-xl mx-auto rounded-3xl shadow-2xl border-none">
+    
+    {/* Header Card */}
+    <CardHeader className="space-y-1 text-center">
+      <CardTitle className="text-xl font-black tracking-tight">
+        Book Your Appointment
+      </CardTitle>
+      <CardDescription className="text-sm text-gray-500">
+        Fill in the details below to reserve your time
+      </CardDescription>
+    </CardHeader>
 
-        <div className="space-y-2">
-                <Label htmlFor="customerPhone">Nomor Telepon</Label>
-                <Input
-                    id="customerPhone"
-                    type="text" 
-                    placeholder="Masukkan Nomor Telepon"
-                    value={customerPhone}
-                    onChange={(e) => setCustomerPhone(filterNomor(e.target.value))}
-                    disabled={isLoading}
-                />
+    {/* Isi Card */}
+    <CardContent>
+      <form onSubmit={handleSubmit} className="space-y-5">
+
+        {/* Full Name */}
+        <div className="space-y-1.5">
+          <Label
+            htmlFor="customerName"
+            className="text-[10px] font-black uppercase tracking-widest text-black ml-2"
+          >
+            Full Name
+          </Label>
+          <Input
+            id="customerName"
+            type="text"
+            placeholder="Enter your name"
+            value={customerName}
+            onChange={(e) => setCustomerName(filterNama(e.target.value))}
+            disabled={isLoading}
+            className="w-full px-5 py-6 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-black outline-none font-bold text-sm placeholder:text-gray-300"
+          />
         </div>
 
+        {/* Phone Number */}
+        <div className="space-y-1.5">
+          <Label
+            htmlFor="customerPhone"
+            className="text-[10px] font-black uppercase tracking-widest text-black ml-2"
+          >
+            Phone Number
+          </Label>
+          <Input
+            id="customerPhone"
+            type="text"
+            placeholder="e.g. 08123456789"
+            value={customerPhone}
+            onChange={(e) => setCustomerPhone(filterNomor(e.target.value))}
+            disabled={isLoading}
+            className="w-full px-5 py-6 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-black outline-none font-bold text-sm placeholder:text-gray-300"
+          />
+        </div>
+
+        {/* Service */}
         <CustomServiceSelector
-        services={services}
-        selectedServiceId={selectedServiceId}
-        onSelectService={setSelectedServiceId}
-        disabled={services.length === 0}
-      />
+          services={services}
+          selectedServiceId={selectedServiceId}
+          onSelectService={setSelectedServiceId}
+          disabled={services.length === 0}
+        />
 
-      <CustomDateTimePicker
-        selectedDate={selectedBookingTime}
-        onSelectDate={setSelectedBookingTime}
-      />
+        {/* Date & Time */}
+        <CustomDateTimePicker
+          selectedDate={selectedBookingTime}
+          onSelectDate={setSelectedBookingTime}
+        />
 
-      <Button
-        type="submit"
-        className="w-full"
-        // Nonaktifkan tombol jika ada loading atau field-field penting belum diisi
-        disabled={isLoading || services.length === 0 || !selectedBookingTime || !customerName || !customerPhone}
-      >
-        {isLoading ? 'Memproses...' : 'Pesan Sekarang'}
-      </Button>
-    </form>
-  );
+        {/* Submit */}
+        <Button
+          type="submit"
+          disabled={
+            isLoading ||
+            services.length === 0 ||
+            !selectedBookingTime ||
+            !customerName ||
+            !customerPhone
+          }
+          className="w-full py-7 text-xs font-black uppercase tracking-widest bg-gray-900 hover:bg-black text-white rounded-2xl shadow-xl active:scale-[0.98]"
+        >
+          {isLoading ? 'Processing...' : 'Book Appointment Now'}
+        </Button>
+
+      </form>
+    </CardContent>
+  </Card>
+);
 }
