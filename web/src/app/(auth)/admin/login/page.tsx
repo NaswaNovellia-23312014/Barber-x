@@ -90,9 +90,10 @@ export default function LoginPage() {
 
   return (
     <AuthClientWrapper>
-      {({ saveAuthToken }) => (
-        <div className="min-h-screen bg-white flex items-center justify-center p-4">
+      {() => (
+        <div className="min-h-screen bg-white flex items-center justify-center p-4 font-sans">
           <div className="w-full max-w-md">
+            
             {/* Bagian Header dan Logo */}
             <div className="text-center mb-2">
               <div className="relative w-32 h-32 mx-auto">
@@ -109,34 +110,24 @@ export default function LoginPage() {
               </h1>
             </div>
 
-            {/* Login Card */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+            {/* Kartu Login */}
+            <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 p-10">
               <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Admin Akses</h2>
-                <p className="text-gray-600 text-sm">Masukkan kredensial Anda untuk melanjutkan</p>
+                <h2 className="text-2xl font-black text-gray-900 mb-2">Admin Access</h2>
+                <p className="text-gray-500 text-sm font-medium">Please enter your credentials to continue</p>
               </div>
 
-              {/* Error Message */}
+              {/* Notifikasi Error */}
               {error && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center space-x-3">
-                  <div className="flex-shrink-0 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <span className="text-red-700 text-sm font-medium">{error}</span>
+                <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-2xl flex items-center">
+                   <span className="text-red-700 text-xs font-bold uppercase tracking-wide">{error}</span>
                 </div>
               )}
 
-              {/* Success Message */}
+              {/* Notifikasi Sukses */}
               {success && (
-                <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center space-x-3">
-                  <div className="flex-shrink-0 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <span className="text-green-700 text-sm font-medium">{success}</span>
+                <div className="mb-6 p-4 bg-green-50 border border-green-100 rounded-2xl flex items-center">
+                   <span className="text-green-700 text-xs font-bold uppercase tracking-wide">{success}</span>
                 </div>
               )}
 
