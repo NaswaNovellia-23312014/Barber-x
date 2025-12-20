@@ -3,7 +3,9 @@ import Link from "next/link";
 export default function Footer() {
   return (
     <footer className="w-full bg-gradient-to-b from-[#2F2F2F] to-[#1F1F1F] text-[#E8DFC8] py-16 mt-28">
+      
       <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-14">
+
         {/* BRAND */}
         <div>
           <h2 className="text-2xl font-bold tracking-[0.3em] text-[#C8A36A]">
@@ -13,13 +15,18 @@ export default function Footer() {
           <div className="w-14 h-[3px] bg-[#C8A36A] my-4"></div>
 
           <p className="text-sm text-gray-400 leading-relaxed">
-            A premium barbershop in Bandar Lampung with professional service and
-            the best grooming experience.
+            Barbershop premium di Bandar Lampung dengan pelayanan profesional
+            dan pengalaman grooming terbaik.
           </p>
         </div>
 
         {/* MENU */}
-        <ul className="flex flex-col gap-3 text-sm">
+        <div>
+          <h3 className="font-semibold text-lg mb-4 text-[#C8A36A]">
+            Menu
+          </h3>
+
+          <ul className="flex flex-col gap-3 text-sm">
             {[
               { name: "Home", href: "#home" },
               { name: "Catalog", href: "#services" },
@@ -38,16 +45,19 @@ export default function Footer() {
               </li>
             ))}
           </ul>
+        </div>
 
         {/* CONTACT */}
         <div>
-          <h3 className="font-semibold text-lg mb-4 text-[#C8A36A]">Contact</h3>
-        </div>
+          <h3 className="font-semibold text-lg mb-4 text-[#C8A36A]">
+            Contact
+          </h3>
 
-        <div className="space-y-3 text-sm text-gray-400">
-          <p>📞 WhatsApp: 0812-3456-7890</p>
-          <p>📸 Instagram: @barberx.id</p>
-          <p>📍 Bandar Lampung</p>
+          <div className="space-y-3 text-sm text-gray-400">
+            <p>📞 WhatsApp: 0812-3456-7890</p>
+            <p>📍 Bandar Lampung</p>
+            <p>📸 Instagram: @barberx.id</p>
+          </div>
         </div>
       </div>
 
