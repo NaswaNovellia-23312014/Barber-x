@@ -31,7 +31,7 @@ async function authenticatedFetcher<T>(
     if (requireAuth) {
         const token = getAuthToken();
         if (!token) {
-            throw new Error('UNAUTHENTICATED: No token found. Please log in.');
+            throw new Error('UNAUTHENTICATED: No token found.');
         }
         headers['Authorization'] = `Bearer ${token}`; 
     }
@@ -39,7 +39,7 @@ async function authenticatedFetcher<T>(
     const response = await fetch(url, { ...options, headers });
 
     if (response.status === 401 && requireAuth) {
-        throw new Error('UNAUTHORIZED: Token invalid or expired. Please log in again.');
+        throw new Error('UNAUTHORIZED: Token expired.');
     }
 
     if (!response.ok) {
