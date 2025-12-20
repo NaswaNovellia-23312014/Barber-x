@@ -53,19 +53,10 @@ export default function Home() {
 
             <div className="grid grid-cols-2 gap-6 mt-8">
               {[
-                [
-                  "Professional",
-                  "Skilled barbers with experience and passion.",
-                ],
-                [
-                  "Premium Service",
-                  "High quality tools and grooming products.",
-                ],
+                ["Professional", "Skilled barbers with experience and passion."],
+                ["Premium Service", "High quality tools and grooming products."],
                 ["Comfort Space", "Relaxing place with modern interior."],
-                [
-                  "Best Experience",
-                  "Grooming experience that boosts confidence.",
-                ],
+                ["Best Experience", "Grooming experience that boosts confidence."],
               ].map(([title, desc]) => (
                 <div key={title}>
                   <h4 className="text-[#C8A36A] font-semibold text-lg">
@@ -109,19 +100,14 @@ export default function Home() {
             ["Haircut", "Rp 30.000", "/images/haircutt.png"],
             ["Haircut + Wash", "Rp 40.000", "/images/wash.png"],
             ["Beard Trim", "Rp 25.000", "/images/beard.png"],
+            ["Hair Coloring", "Rp 80.000", "/images/coloring.png"],
+            ["Creambath", "Rp 45.000", "/images/creambath.png"],
+            ["Face Treatment", "Rp 50.000", "/images/facial.png"],
           ].map(([title, price, img]) => (
             <div
               key={title}
               className="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden max-w-[300px] mx-auto"
             >
-              <h3>{title}</h3>
-              <p className="text-sm text-gray-500 mb-4">
-                Professional service for your best style.
-              </p>
-              <span>{price}</span>
-              <Link href="/booking">
-                <Button>Book</Button>
-              </Link>
               <Image
                 src={img}
                 alt={title}
@@ -129,6 +115,28 @@ export default function Home() {
                 height={200}
                 className="object-cover w-full h-[180px]"
               />
+
+              <div className="p-5">
+                <h3 className="text-lg font-semibold text-[#3F3F3F]">
+                  {title}
+                </h3>
+
+                <div className="w-10 h-[3px] bg-[#C8A36A] my-3"></div>
+
+                <p className="text-sm text-gray-500 mb-4">
+                  Professional service for your best style.
+                </p>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-lg font-bold text-[#C8A36A]">
+                    {price}
+                  </span>
+
+                  <Link href="/booking">
+                    <Button>Book</Button>
+                  </Link>
+                </div>
+              </div>
             </div>
           ))}
         </div>
