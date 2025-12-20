@@ -1,7 +1,7 @@
 
 // Membersihkan nilai input agar HANYA mengandung mengandung huruf (a-z, A-Z)
 export const filterNama = (value: string): string => {
-    return value.replace(/[^a-zA-Z]/g, '');
+    return value.replace(/[^a-zA-Z ]/g, '');
 };
 
 // Membersihkan nilai input agar HANYA mengandung angka (0-9).
