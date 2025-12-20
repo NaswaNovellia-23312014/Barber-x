@@ -1,14 +1,10 @@
-// web/src/components/CustomDateTimePicker.tsx
 'use client';
 
 import * as React from 'react';
 import { useState, useEffect, useMemo } from 'react';
-
-// date-fns imports
 import { format, getDay, setHours, setMinutes, isToday } from 'date-fns';
 import parseISO from 'date-fns/parseISO'; 
 
-// === KOMPONEN SHADCN UI ===
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar'; 
@@ -35,11 +31,14 @@ export default function CustomDateTimePicker({
   const [fetchingBookings, setFetchingBookings] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
+  // Mencegah kesalahan hidrasi antara server dan client
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  // Ambil data booking untuk tanggal yang dipilih dari backend
+  /**
+   * Mengambil data pemesanan untuk mengecek slot yang sudah terisi.
+   */
   useEffect(() => {
     if (!isClient || !selectedDate) { 
         setBookedTimes(new Set()); 
