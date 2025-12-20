@@ -80,18 +80,17 @@ export async function updateService(id: string, serviceData: Partial<Service>): 
     method: 'PUT',
     body: JSON.stringify(serviceData),
   }, true);
-  return response.service || (response as Service);
+  return response.service;
 }
 
-// SERVICES - DELETE
 export async function deleteService(id: string): Promise<void> {
-  await authenticatedFetcher<MessageResponse>('/admin/services?id=' + id, {
+  await authenticatedFetcher<MessageResponse>(`/admin/services?id=${id}`, {
     method: 'DELETE',
   }, true);
-  return; 
 }
 
-// BOOKINGS - READ
+// BOOKINGS API 
+
 export async function getAdminBookings(): Promise<Booking[]> {
     const response = await authenticatedFetcher<{ data: Booking[] }>('/admin/bookings', {
         cache: 'no-store'
@@ -99,22 +98,16 @@ export async function getAdminBookings(): Promise<Booking[]> {
     return response.data; 
 }
 
-// BOOKINGS - UPDATE STATUS
-export async function updateBookingStatus(
-    id: string, 
-    data: { status: Booking['status'] }
-): Promise<Booking> {
-    const response = await authenticatedFetcher<{ booking: Booking }>('/admin/bookings?id=' + id, {
-        method: 'PUT',
-        body: JSON.stringify(data),
-    }, true);
-    return response.booking || (response as Booking);
+export async function updateBookingStatus(id: string, data: { status: string }) {
+  // Menggunakan PUT dan query param ?id= sesuai backend kamu
+  return await authenticatedFetcher<MessageResponse>(`/admin/bookings?id=${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  }, true);
 }
 
-// BOOKINGS - DELETE
 export async function deleteBooking(id: string): Promise<void> {
-    await authenticatedFetcher<MessageResponse>('/admin/bookings?id=' + id, {
+    await authenticatedFetcher<MessageResponse>(`/admin/bookings?id=${id}`, {
         method: 'DELETE',
     }, true);
-    return;
 }
