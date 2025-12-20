@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
-    <div className="w-full mt-8">
+    <div className="w-full mt-8 pt-24">
 
       {/* Hero Section */}
       <section
