@@ -59,6 +59,7 @@ export default function Home() {
               {[
                 ["Professional", "Skilled barbers with experience and passion."],
                                 ["Premium Service", "High quality tools and grooming products."],
+                ["Comfort Space", "Relaxing place with modern interior."],
 
                 
               ].map(([title, desc]) => (
