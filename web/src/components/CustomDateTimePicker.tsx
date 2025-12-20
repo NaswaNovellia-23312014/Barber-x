@@ -94,22 +94,18 @@ export default function CustomDateTimePicker({
     onSelectDate(fullSelectedDateTime);
   };
   
-  // Generate semua slot waktu yang mungkin
+  // Menghasilkan slot waktu (09:00 - 21:00)
   const allPossibleTimeSlots = useMemo(() => {
     const slots: string[] = [];
-    const startHour = 9;
-    const endHour = 21; 
-    const intervalMinutes = 30;
-
-    for (let h = startHour; h < endHour; h++) {
-      for (let m = 0; m < 60; m += intervalMinutes) {
+    for (let h = 9; h < 21; h++) {
+      for (let m = 0; m < 60; m += 30) {
         slots.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
       }
     }
     return slots;
   }, []);
 
-  // Filter slot waktu yang ditampilkan
+  // Filter slot waktu berdasarkan ketersediaan dan waktu sekarang
   const filteredTimeSlots = useMemo(() => {
     if (!isClient || !selectedDate) return []; 
 
@@ -118,18 +114,10 @@ export default function CustomDateTimePicker({
     const isTodaySelected = isToday(selectedDate);
 
     return allPossibleTimeSlots.map(slotTime => {
-        let isDisabled = false;
-
-        if (bookedTimes.has(slotTime)) {
+        let isDisabled = bookedTimes.has(slotTime);
+        if (isTodaySelected && slotTime < currentHourMinute) {
             isDisabled = true;
         }
-
-        if (isTodaySelected) {
-            if (slotTime < currentHourMinute) {
-                isDisabled = true;
-            }
-        }
-        
         return { time: slotTime, isBooked: isDisabled };
     });
   }, [allPossibleTimeSlots, selectedDate, bookedTimes, isClient]);
@@ -139,23 +127,18 @@ export default function CustomDateTimePicker({
     return day !== 0 && day !== 6; 
   };
 
-  // === SOLUSI HYDRATION ERROR ===
+  // State loading awal untuk mencegah hydration mismatch
   if (!isClient) {
       return (
-          <div className="space-y-4">
-              <Label className="block text-sm font-medium text-gray-700">Pilih Tanggal</Label>
-              <Button
-                  variant={"outline"}
-                  className="w-full justify-start text-left font-normal text-muted-foreground"
-                  disabled
-              >
+          <div className="space-y-1.5">
+              <Label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Select Date</Label>
+              <Button variant="outline" className="w-full justify-start py-6 rounded-2xl bg-gray-50 border-none" disabled>
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  <span>Memuat tanggal...</span>
+                  <span>Loading...</span>
               </Button>
           </div>
       );
   }
-  // ============================
     
   return (
     <div className="space-y-4">
