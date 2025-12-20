@@ -29,14 +29,10 @@ export interface User {
     role: string;
 }
 
-// Tipe data untuk respons sukses dari API login
-export interface AuthResponse {
-    token: string;
-    admin: User;
+// Tipe standar untuk respon API
+export interface ApiResponse<T = null> {
     message: string;
-}
-
-// Tipe dasar untuk respons yang hanya berisi pesan
-export interface MessageResponse {
-    message: string;
+    data: T;
+    token?: string;
+    user?: User;
 }
