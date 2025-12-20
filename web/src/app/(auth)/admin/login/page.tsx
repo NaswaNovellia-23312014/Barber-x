@@ -137,16 +137,16 @@ export default function LoginPage() {
                   <label htmlFor="username" className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">
                     Username
                   </label>
-                    <input
-                      id="username"
-                      type="text"
-                      required
+                  <input
+                    id="username"
+                    type="text"
+                    required
                     className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-black outline-none font-bold transition-all"
                     placeholder="Enter username"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      disabled={loading}
-                    />
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    disabled={loading}
+                  />
                 </div>
 
                 {/* Input Password */}
