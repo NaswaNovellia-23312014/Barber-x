@@ -11,26 +11,31 @@ import { API_URL } from '@/lib/api';
 
 import CustomServiceSelector from './CustomServiceSelector';
 import CustomDateTimePicker from './CustomDateTimePicker';
-import { filterNama } from '@/lib/input-helpers';
-import { filterNomor } from '@/lib/input-helpers';
+import { filterNama, filterNomor } from '@/lib/input-helpers';
+
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+} from '@/components/ui/card';
+
 
 interface BookingFormProps {
-  services: Service[];
+    services: Service[];
 }
 
 export default function BookingForm({ services }: BookingFormProps) {
     const router = useRouter();
 
+    // State dasar untuk form pemesanan
     const [selectedServiceId, setSelectedServiceId] = useState<string>(() => {
-        if (services && services.length > 0) {
-        return services[0].id;
-        }
-        return '';
+        return (services && services.length > 0) ? services[0].id : '';
     });
 
     const [customerName, setCustomerName] = useState('');
     const [customerPhone, setCustomerPhone] = useState('');
-    // Gunakan 'undefined'
     const [selectedBookingTime, setSelectedBookingTime] = useState<Date | undefined>(undefined);
     const [isLoading, setIsLoading] = useState(false);
 
