@@ -93,7 +93,7 @@ export default function LoginPage() {
       {({ saveAuthToken }) => (
         <div className="min-h-screen bg-white flex items-center justify-center p-4">
           <div className="w-full max-w-md">
-            {/* Logo/Header Section*/}
+            {/* Bagian Header dan Logo */}
             <div className="text-center mb-2">
               <div className="relative w-32 h-32 mx-auto">
                 <Image
@@ -104,8 +104,8 @@ export default function LoginPage() {
                   priority
                 />
               </div>
-              <h1 className="text-4xl font-bold text-gray-900 tracking-normal">
-                BarberX
+              <h1 className="text-4xl font-black text-gray-900 tracking-tight">
+                BARBERX
               </h1>
             </div>
 
