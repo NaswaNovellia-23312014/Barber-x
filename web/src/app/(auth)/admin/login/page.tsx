@@ -30,7 +30,8 @@ const loginAdmin = async (username: string, password: string): Promise<LoginResp
 
     if (!res.ok) {
         const errorData = await res.json().catch(() => ({ message: res.statusText }));
-        const errorMessage = errorData.message || 'Kredensial tidak valid.'; 
+        // Pesan error diubah ke Bahasa Inggris untuk konsistensi UI
+        const errorMessage = errorData.message || 'Invalid credentials.'; 
         throw new Error(errorMessage);
     }
 
@@ -68,14 +69,15 @@ export default function LoginPage() {
         admin: response.admin
       });
       
-      setSuccess(`Login berhasil! Selamat datang, ${response.admin.username}.`);
+      setSuccess(`Login successful! Welcome, ${response.admin.username}.`);
       
+      // Mengarahkan pengguna ke dashboard setelah jeda singkat
       setTimeout(() => {
         window.location.href = '/admin/dashboard';
-      }, 1500);
+      }, 1000);
 
     } catch (error) {
-      const errorMessage = (error instanceof Error) ? error.message : 'Terjadi kesalahan saat login.';
+      const errorMessage = (error instanceof Error) ? error.message : 'An error occurred during login.';
       setError(errorMessage);
     } finally {
       setLoading(false);
