@@ -10,6 +10,7 @@ export default function Navbar() {
   return (
     <nav className="w-full bg-[#F5ECD6] shadow-md border-b border-black/10 fixed top-0 left-0 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between py-4 px-6">
+
         {/* Logo */}
         <div className="flex items-center gap-3">
           <Image
@@ -32,37 +33,38 @@ export default function Navbar() {
           {open ? "✕" : "☰"}
         </button>
 
-        {/* Menu */}
+        {/* Menu Desktop */}
         <div className="hidden md:flex gap-8 font-medium text-[#3F3F3F]">
           <Link
             href="#home"
             className="hover:text-black transition relative group"
           >
             Home
-            <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#000000] transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
           </Link>
 
           <Link
             href="#about"
-            className="hover:text-[#000000] transition relative group"
+            className="hover:text-black transition relative group"
           >
             About
-            <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#000000] transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
           </Link>
 
           <Link
             href="#services"
-            className="hover:text-[#000000] transition relative group"
+            className="hover:text-black transition relative group"
           >
             Catalog
-            <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#000000] transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
           </Link>
+
           <Link
             href="#contact"
-            className="hover:text-[#000000] transition relative group"
+            className="hover:text-black transition relative group"
           >
             Contact
-            <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#000000] transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
           </Link>
         </div>
       </div>
@@ -70,14 +72,10 @@ export default function Navbar() {
       {/* Menu Mobile */}
       {open && (
         <div className="md:hidden bg-[#F5ECD6] flex flex-col gap-4 px-6 py-4 border-t border-black/10 font-medium text-[#3F3F3F]">
-                    <Link href="#home" onClick={() => setOpen(false)}>Home</Link>
-                              <Link href="#about" onClick={() => setOpen(false)}>About</Link>
-                                        <Link href="#services" onClick={() => setOpen(false)}>Catalog</Link>
-
+          <Link href="#home" onClick={() => setOpen(false)}>Home</Link>
+          <Link href="#about" onClick={() => setOpen(false)}>About</Link>
+          <Link href="#services" onClick={() => setOpen(false)}>Catalog</Link>
           <Link href="#contact" onClick={() => setOpen(false)}>Contact</Link>
-
-
-
         </div>
       )}
     </nav>
