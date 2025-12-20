@@ -2,13 +2,15 @@
 
 import { useState } from 'react';
 import AuthClientWrapper from '@/components/AuthClientWrapper';
-import Image from 'next/image'; // Import Image dari Next.js, bukan lucide-react
+import { setAuthData } from '@/lib/auth'; 
 
 const API_URL = "http://localhost:3007/api";
 
+// DEFINISI TIPE DATA
 interface AdminData {
     id: string;
     username: string;
+    role: string;
 }
 
 interface LoginResponse {
