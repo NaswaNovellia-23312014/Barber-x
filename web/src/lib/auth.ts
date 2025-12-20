@@ -1,31 +1,20 @@
 import { User } from '@/types';
 
-// Key untuk Local Storage
-const TOKEN_KEY = 'barberx_admin_token';
-const USER_KEY = 'barberx_admin_user'; // Key untuk menyimpan data admin
+// Pastikan dua kunci ini unik dan sama di semua file
+const TOKEN_KEY = 'barberx_token_v1'; 
+const ADMIN_KEY = 'barberx_admin_v1';
 
-/**
- * Menyimpan token dan data user ke Local Storage setelah login sukses.
- * Ini adalah fungsi utama setelah POST /login berhasil.
- * @param data - Objek respons dari API login ({ token, admin: User }).
- */
-export function setAuthData(data: { token: string, admin: User }): void {
-    if (typeof window !== 'undefined') {
-        try {
-            localStorage.setItem(TOKEN_KEY, data.token);
-            // Menyimpan data user dalam format string JSON
-            localStorage.setItem(USER_KEY, JSON.stringify(data.admin));
-        } catch (error) {
-            console.error('Error saving auth data to Local Storage:', error);
-        }
-    }
+interface AuthData {
+  token: string;
+  admin: User; // Kita gunakan label 'admin'
 }
 
-/**
- * Mengambil token otentikasi dari Local Storage.
- * Digunakan untuk header 'Authorization'.
- * @returns Token JWT atau null jika tidak ada.
- */
+export function setAuthData(data: AuthData) {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(TOKEN_KEY, data.token);
+  localStorage.setItem(ADMIN_KEY, JSON.stringify(data.admin));
+}
+
 export function getAuthToken(): string | null {
     if (typeof window !== 'undefined') {
         try {
