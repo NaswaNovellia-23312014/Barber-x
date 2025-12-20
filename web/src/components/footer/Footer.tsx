@@ -18,8 +18,9 @@ export default function Footer() {
           </p>
         </div>
 
+        {/* MENU */}
         <ul className="flex flex-col gap-3 text-sm">
-           {[
+            {[
               { name: "Home", href: "#home" },
               { name: "Catalog", href: "#services" },
               { name: "Booking", href: "/booking" },
@@ -44,11 +45,10 @@ export default function Footer() {
         </div>
 
         <div className="space-y-3 text-sm text-gray-400">
-            <p>📞 WhatsApp: 0812-3456-7890</p>
-            <p>📸 Instagram: @barberx.id</p>
-            <p>📍 Bandar Lampung</p>
-          </div>
-
+          <p>📞 WhatsApp: 0812-3456-7890</p>
+          <p>📸 Instagram: @barberx.id</p>
+          <p>📍 Bandar Lampung</p>
+        </div>
       </div>
 
       {/* DIVIDER */}
