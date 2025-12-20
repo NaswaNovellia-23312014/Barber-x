@@ -90,6 +90,10 @@ export default function Home() {
               height={350}
               className="rounded-xl shadow-2xl w-[380px] md:w-[480px] object-cover border-2 border-gray-300"
             />
+
+            <section id= "services">
+
+            </section>
           </div>
         </div>
       </section>
