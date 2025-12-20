@@ -24,6 +24,14 @@ export default function Navbar() {
           </h1>
         </div>
 
+        {/* Hamburger (mobile) */}
+        <button
+          className="md:hidden text-3xl text-[#3F3F3F]"
+          onClick={() => setOpen(!open)}
+        >
+          {open ? "✕" : "☰"}
+        </button>
+
         {/* Menu */}
         <div className="hidden md:flex gap-8 font-medium text-[#3F3F3F]">
           <Link
