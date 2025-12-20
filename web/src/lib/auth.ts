@@ -25,9 +25,14 @@ export function getAdminUser(): User | null {
   const data = localStorage.getItem(ADMIN_KEY);
   return data ? JSON.parse(data) : null;
 }
+
+export function removeAuthData() {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(ADMIN_KEY);
+}
+
+// Tambahkan ini untuk mengecek apakah token ada
 export function checkAuthStatus(): boolean {
-    const token = getAuthToken();
-    const user = getAdminUser();
-    // Harus ada token DAN data user
-    return !!token && !!user; 
+  return !!getAuthToken();
 }
