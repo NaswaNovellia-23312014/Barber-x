@@ -22,6 +22,11 @@ export default function Footer() {
         <div>
           <h3 className="font-semibold text-lg mb-4 text-[#C8A36A]">Contact</h3>
         </div>
+
+        <div className="space-y-3 text-sm text-gray-400">
+            <p>📞 WhatsApp: 0812-3456-7890</p>
+          </div>
+
       </div>
 
       {/* DIVIDER */}
