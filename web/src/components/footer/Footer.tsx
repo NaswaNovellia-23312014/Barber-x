@@ -27,7 +27,10 @@ export default function Footer() {
               { name: "Contact", href: "#contact" },
             ].map((item) => (
               <li key={item.name}>
+                <Link href={item.href} className="hover:text-[#C8A36A] transition">
+                  {item.name}
                 
+                </Link>
               </li>
             ))}
           </ul>
