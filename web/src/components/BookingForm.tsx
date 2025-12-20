@@ -44,36 +44,32 @@ export default function BookingForm({ services }: BookingFormProps) {
         isMounted.current = true;
     }, []);
 
+    // Sinkronisasi ID layanan jika data props services berubah
     useEffect(() => {
         if (!isMounted.current) return;
 
         if (!services || services.length === 0) {
-        if (selectedServiceId !== '') {
-            setSelectedServiceId('');
-        }
-        return;
+            if (selectedServiceId !== '') setSelectedServiceId('');
+            return;
         }
 
-    const currentServiceExists = services.some(s => s.id === selectedServiceId);
-
-    if (!selectedServiceId || !currentServiceExists) {
-        const firstServiceId = services[0]?.id || '';
-        if (selectedServiceId !== firstServiceId) {
-            setSelectedServiceId(firstServiceId);
+        const currentServiceExists = services.some(s => s.id === selectedServiceId);
+        if (!selectedServiceId || !currentServiceExists) {
+            const firstServiceId = services[0]?.id || '';
+            if (selectedServiceId !== firstServiceId) {
+                setSelectedServiceId(firstServiceId);
+            }
         }
-    }
     }, [services, selectedServiceId]);
 
+    /**
+     * Mengirim data booking ke API backend.
+     */
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault(); // Mencegah default form submission (page reload)
+        e.preventDefault();
         setIsLoading(true);
 
-    // Cek keberadaan semua data yang diperlukan
-    if (!customerName || !customerPhone || !selectedServiceId || !selectedBookingTime) {
-        toast.error('Harap lengkapi semua data booking.');
-        setIsLoading(false);
-        return;
-    }
+        if (!customerName || !customerPhone || !selectedServiceId || !selectedBookingTime) {
 
     try {
         const response = await fetch(`${API_URL}/bookings`, {
