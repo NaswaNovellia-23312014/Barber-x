@@ -131,82 +131,57 @@ export default function LoginPage() {
                 </div>
               )}
 
-              <form onSubmit={(e) => handleSubmit(e, { saveAuthToken })} className="space-y-6">
-                {/* Username Field */}
-                <div className="space-y-2">
-                  <label htmlFor="username" className="text-sm font-medium text-gray-700">
+              <form onSubmit={handleSubmit} className="space-y-5">
+                {/* Input Username */}
+                <div className="space-y-1.5">
+                  <label htmlFor="username" className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">
                     Username
                   </label>
-                  <div className="relative">
                     <input
                       id="username"
-                      name="username"
                       type="text"
-                      autoComplete="username"
                       required
-                      className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition duration-200"
-                      placeholder="Masukkan username Anda"
+                    className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-black outline-none font-bold transition-all"
+                    placeholder="Enter username"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       disabled={loading}
                     />
-                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                      <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
-                    </div>
-                  </div>
                 </div>
 
-                {/* Password Field dengan Toggle */}
-                <div className="space-y-2">
-                  <label htmlFor="password" className="text-sm font-medium text-gray-700">
+                {/* Input Password */}
+                <div className="space-y-1.5">
+                  <label htmlFor="password" className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">
                     Password
                   </label>
                   <div className="relative">
                     <input
                       id="password"
-                      name="password"
-                      type={showPassword ? "text" : "password"} // Toggle type
-                      autoComplete="current-password"
+                      type={showPassword ? "text" : "password"}
                       required
-                      className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition duration-200 pr-10"
-                      placeholder="Masukkan password Anda"
+                      className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-black outline-none font-bold transition-all"
+                      placeholder="Enter password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       disabled={loading}
                     />
-                    {/* Toggle Password Button */}
                     <button
                       type="button"
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                      className="absolute inset-y-0 right-4 flex items-center text-[10px] font-black uppercase text-gray-400 hover:text-black transition-colors"
                       onClick={togglePasswordVisibility}
-                      disabled={loading}
                     >
                       {showPassword ? "Hide" : "Show"}
                     </button>
                   </div>
                 </div>
 
-                {/* Submit Button */}
+                {/* Tombol Submit */}
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 px-4 bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 text-white font-medium rounded-lg shadow transition duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  className="w-full py-4 bg-gray-900 hover:bg-black text-white text-xs font-black uppercase tracking-widest rounded-2xl shadow-lg transition disabled:opacity-50 active:scale-[0.98]"
                 >
-                  {loading ? (
-                    <div className="flex items-center justify-center space-x-2">
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>Memproses...</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center space-x-2">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                      </svg>
-                      <span>Masuk ke Dashboard</span>
-                    </div>
-                  )}
+                  {loading ? "Processing..." : "Login to Dashboard"}
                 </button>
               </form>
             </div>
