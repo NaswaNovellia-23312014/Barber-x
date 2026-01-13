@@ -221,6 +221,9 @@ export default function Home() {
       >
         Book via WhatsApp
       </a>
+      <div className="mt-6 text-sm text-gray-500 text-center">
+        Available Everyday • 10:00 AM – 9:00 PM
+      </div>
     </div>
   );
 }
