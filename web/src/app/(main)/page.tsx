@@ -214,6 +214,13 @@ export default function Home() {
         Chat with our barber directly and choose your schedule easily. No
         registration required.
       </p>
+      <a
+        href="https://wa.me/6281234567890"
+        target="_blank"
+        className="block w-full text-center bg-[#C8A36A] text-black font-semibold py-4 rounded-xl hover:bg-[#E9DFC7] transition"
+      >
+        Book via WhatsApp
+      </a>
     </div>
   );
 }
