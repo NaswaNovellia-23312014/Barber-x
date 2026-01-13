@@ -155,6 +155,13 @@ export default function Home() {
         id="contact"
         className="w-full bg-[#F4EBD8] px-6 md:px-16 py-32"
       ></section>
+      <div>
+        <span className="text-sm tracking-widest text-[#C8A36A] uppercase">
+          Contact Us
+        </span>
+
+
+      </div>
     </div>
   );
 }
