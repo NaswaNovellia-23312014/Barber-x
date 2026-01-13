@@ -176,6 +176,12 @@ export default function Home() {
               <FaMapMarkerAlt />
             </div>
           </div>
+          <div>
+            <h4 className="font-semibold text-[#2E2E2E]">Location</h4>
+            <p className="text-gray-600 text-sm">
+              Jl. Barber Street No. 21, Bandar Lampung
+            </p>
+          </div>
           
         </div>
       </div>
