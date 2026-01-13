@@ -183,11 +183,15 @@ export default function Home() {
             </p>
           </div>
           {/* Phone */}
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full bg-[#C8A36A] flex items-center justify-center text-white">
-                  <FaPhoneAlt />
-                </div>
-              </div>
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 rounded-full bg-[#C8A36A] flex items-center justify-center text-white">
+              <FaPhoneAlt />
+            </div>
+          </div>
+          <div>
+            <h4 className="font-semibold text-[#2E2E2E]">Phone</h4>
+            <p className="text-gray-600 text-sm">+62 812-3456-7890</p>
+          </div>
         </div>
       </div>
     </div>
