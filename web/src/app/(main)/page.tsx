@@ -210,6 +210,10 @@ export default function Home() {
           Book Your Appointment
         </h3>
       </div>
+      <p className="text-gray-600 mb-8">
+        Chat with our barber directly and choose your schedule easily. No
+        registration required.
+      </p>
     </div>
   );
 }
