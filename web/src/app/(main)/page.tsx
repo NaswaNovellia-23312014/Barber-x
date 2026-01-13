@@ -168,7 +168,20 @@ export default function Home() {
           Have questions or want to book an appointment? Contact us directly and
           get premium grooming experience.
         </p>
+        <div className="space-y-6">
+              {/* Location */}
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-[#C8A36A] flex items-center justify-center text-white">
+                  <FaMapMarkerAlt />
+                </div>
+              </div>
+
+              
+            </div>
+          </div>
+
+        
       </div>
-    </div>
+
   );
 }
