@@ -53,10 +53,19 @@ export default function Home() {
 
             <div className="grid grid-cols-2 gap-6 mt-8">
               {[
-                ["Professional", "Skilled barbers with experience and passion."],
-                ["Premium Service", "High quality tools and grooming products."],
+                [
+                  "Professional",
+                  "Skilled barbers with experience and passion.",
+                ],
+                [
+                  "Premium Service",
+                  "High quality tools and grooming products.",
+                ],
                 ["Comfort Space", "Relaxing place with modern interior."],
-                ["Best Experience", "Grooming experience that boosts confidence."],
+                [
+                  "Best Experience",
+                  "Grooming experience that boosts confidence.",
+                ],
               ].map(([title, desc]) => (
                 <div key={title}>
                   <h4 className="text-[#C8A36A] font-semibold text-lg">
@@ -141,6 +150,11 @@ export default function Home() {
           ))}
         </div>
       </section>
+      {/* ================= CONTACT ================= */}
+      <section
+        id="contact"
+        className="w-full bg-[#F4EBD8] px-6 md:px-16 py-32"
+      ></section>
     </div>
   );
 }
