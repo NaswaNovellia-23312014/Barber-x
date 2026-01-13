@@ -164,7 +164,10 @@ export default function Home() {
           Get In Touch With Barber-X
         </h2>
 
-
+        <p className="text-gray-600 mb-10 leading-relaxed">
+          Have questions or want to book an appointment? Contact us directly and
+          get premium grooming experience.
+        </p>
       </div>
     </div>
   );
