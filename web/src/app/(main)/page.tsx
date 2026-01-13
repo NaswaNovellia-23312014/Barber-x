@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { FaMapMarkerAlt } from "react-icons/fa";
+import { FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
 
 export default function Home() {
   return (
@@ -182,7 +182,12 @@ export default function Home() {
               Jl. Barber Street No. 21, Bandar Lampung
             </p>
           </div>
-          
+          {/* Phone */}
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-[#C8A36A] flex items-center justify-center text-white">
+                  <FaPhoneAlt />
+                </div>
+              </div>
         </div>
       </div>
     </div>
