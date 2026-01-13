@@ -160,6 +160,10 @@ export default function Home() {
           Contact Us
         </span>
 
+        <h2 className="text-3xl md:text-5xl font-bold text-[#2E2E2E] mt-3 mb-6">
+          Get In Touch With Barber-X
+        </h2>
+
 
       </div>
     </div>
