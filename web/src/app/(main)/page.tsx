@@ -152,78 +152,86 @@ export default function Home() {
         </div>
       </section>
       {/* ================= CONTACT ================= */}
-      <section
-        id="contact"
-        className="w-full bg-[#F4EBD8] px-6 md:px-16 py-32"
-      ></section>
-      <div>
-        <span className="text-sm tracking-widest text-[#C8A36A] uppercase">
-          Contact Us
-        </span>
-
-        <h2 className="text-3xl md:text-5xl font-bold text-[#2E2E2E] mt-3 mb-6">
-          Get In Touch With Barber-X
-        </h2>
-
-        <p className="text-gray-600 mb-10 leading-relaxed">
-          Have questions or want to book an appointment? Contact us directly and
-          get premium grooming experience.
-        </p>
-        <div className="space-y-6">
-          {/* Location */}
-          <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-full bg-[#C8A36A] flex items-center justify-center text-white">
-              <FaMapMarkerAlt />
-            </div>
-          </div>
+      <section id="contact" className="w-full bg-[#F4EBD8] px-6 md:px-16 py-32">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+          {/* LEFT */}
           <div>
-            <h4 className="font-semibold text-[#2E2E2E]">Location</h4>
-            <p className="text-gray-600 text-sm">
-              Jl. Barber Street No. 21, Bandar Lampung
+            <span className="text-sm tracking-widest text-[#C8A36A] uppercase">
+              Contact Us
+            </span>
+
+            <h2 className="text-3xl md:text-5xl font-bold text-[#2E2E2E] mt-3 mb-6">
+              Get In Touch With Barber-X
+            </h2>
+
+            <p className="text-gray-600 mb-10 leading-relaxed">
+              Have questions or want to book an appointment? Contact us directly
+              and get premium grooming experience.
             </p>
-          </div>
-          {/* Phone */}
-          <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-full bg-[#C8A36A] flex items-center justify-center text-white">
-              <FaPhoneAlt />
+
+            <div className="space-y-6">
+              {/* Location */}
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-[#C8A36A] flex items-center justify-center text-white">
+                  <FaMapMarkerAlt />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-[#2E2E2E]">Location</h4>
+                  <p className="text-gray-600 text-sm">
+                    Jl. Barber Street No. 21, Bandar Lampung
+                  </p>
+                </div>
+              </div>
+
+              {/* Phone */}
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-[#C8A36A] flex items-center justify-center text-white">
+                  <FaPhoneAlt />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-[#2E2E2E]">Phone</h4>
+                  <p className="text-gray-600 text-sm">+62 812-3456-7890</p>
+                </div>
+              </div>
+
+              {/* Email */}
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-[#C8A36A] flex items-center justify-center text-white">
+                  <FaEnvelope />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-[#2E2E2E]">Email</h4>
+                  <p className="text-gray-600 text-sm">contact@barberx.com</p>
+                </div>
+              </div>
             </div>
           </div>
-          <div>
-            <h4 className="font-semibold text-[#2E2E2E]">Phone</h4>
-            <p className="text-gray-600 text-sm">+62 812-3456-7890</p>
-          </div>
-          {/* Email */}
-          <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-full bg-[#C8A36A] flex items-center justify-center text-white">
-              <FaEnvelope />
+
+          {/* RIGHT – WHATSAPP CARD */}
+          <div className="bg-white rounded-2xl shadow-xl p-10 border border-black/5">
+            <h3 className="text-2xl font-bold text-[#2E2E2E] mb-4">
+              Book Your Appointment
+            </h3>
+
+            <p className="text-gray-600 mb-8">
+              Chat with our barber directly and choose your schedule easily. No
+              registration required.
+            </p>
+
+            <a
+              href="https://wa.me/6281234567890"
+              target="_blank"
+              className="block w-full text-center bg-[#C8A36A] text-black font-semibold py-4 rounded-xl hover:bg-[#E9DFC7] transition"
+            >
+              Book via WhatsApp
+            </a>
+
+            <div className="mt-6 text-sm text-gray-500 text-center">
+              Available Everyday • 10:00 AM – 9:00 PM
             </div>
-          </div>
-          <div>
-            <h4 className="font-semibold text-[#2E2E2E]">Email</h4>
-            <p className="text-gray-600 text-sm">contact@barberx.com</p>
           </div>
         </div>
-      </div>
-      {/* RIGHT – WHATSAPP CARD */}
-      <div className="bg-white rounded-2xl shadow-xl p-10 border border-black/5">
-        <h3 className="text-2xl font-bold text-[#2E2E2E] mb-4">
-          Book Your Appointment
-        </h3>
-      </div>
-      <p className="text-gray-600 mb-8">
-        Chat with our barber directly and choose your schedule easily. No
-        registration required.
-      </p>
-      <a
-        href="https://wa.me/6281234567890"
-        target="_blank"
-        className="block w-full text-center bg-[#C8A36A] text-black font-semibold py-4 rounded-xl hover:bg-[#E9DFC7] transition"
-      >
-        Book via WhatsApp
-      </a>
-      <div className="mt-6 text-sm text-gray-500 text-center">
-        Available Everyday • 10:00 AM – 9:00 PM
-      </div>
+      </section>
     </div>
   );
 }
