@@ -198,6 +198,10 @@ export default function Home() {
               <FaEnvelope />
             </div>
           </div>
+          <div>
+            <h4 className="font-semibold text-[#2E2E2E]">Email</h4>
+            <p className="text-gray-600 text-sm">contact@barberx.com</p>
+          </div>
         </div>
       </div>
     </div>
