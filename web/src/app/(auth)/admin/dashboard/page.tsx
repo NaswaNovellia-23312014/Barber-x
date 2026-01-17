@@ -14,6 +14,7 @@ import {
   Phone,
   Calendar as CalendarIcon,
   MessageCircle,
+  Download
 } from 'lucide-react';
 
 import { Booking, Service, User } from '@/types';
