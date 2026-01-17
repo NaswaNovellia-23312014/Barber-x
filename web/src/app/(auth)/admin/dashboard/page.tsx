@@ -336,21 +336,9 @@ export default function AdminDashboardPage() {
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* PANEL KIRI: TABEL PEMESANAN */}
-        <div className="lg:col-span-8 bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden">
-          <div className="flex border-b">
-            <button 
-              onClick={() => setActiveTab('ACTIVE')}
-              className={`flex-1 py-5 text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'ACTIVE' ? 'text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50/30' : 'text-gray-400 hover:bg-gray-50'}`}
-            >
-              Queue & Active ({bookings.filter(b => normalizeStatus(b.status) !== 'COMPLETED').length})
-            </button>
-            <button 
-              onClick={() => setActiveTab('COMPLETED')}
-              className={`flex-1 py-5 text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'COMPLETED' ? 'text-green-600 border-b-2 border-green-600 bg-green-50/30' : 'text-gray-400 hover:bg-gray-50'}`}
-            >
-              Completed History ({stats.completed})
-            </button>
-          </div>
+  
+  {/* HEADER TABLE: Tab Navigasi & Tombol Export */}
+  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 bg-slate-50/30">
 
           <div className="p-6">
             <div className="overflow-x-auto">
