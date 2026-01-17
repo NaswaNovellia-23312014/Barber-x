@@ -49,6 +49,51 @@ export default function AdminDashboardPage() {
       name: '', price: 0, duration: 0, description: ''
   });
 
+  //Fungsi Export CSV
+  const handleExportCSV = () => {
+  // 1. Buat Header Kolom
+  const headers = [
+    "Customer Name",
+    "Phone Number", 
+    "Service Name", 
+    "Price",
+    "Date", 
+    "Time", 
+    "Status"
+  ];
+
+  // 2. Ubah data booking menjadi baris CSV
+  const rows = filteredBookings.map(b => {
+    const date = new Date(b.bookingTime).toLocaleDateString('en-US');
+    const time = new Date(b.bookingTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+    
+    // Kita pakai tanda kutip "..." untuk menangani nama yang mungkin mengandung koma
+    // Tanda petik satu ' pada no HP agar Excel membacanya sebagai teks (bukan angka ilmiah)
+    return [
+      `"${b.customerName}"`,
+      `"'${b.customerPhone}"`, 
+      `"${b.service?.name || 'Hapus'}"`,
+      `"${b.service?.price}"`,
+      `"${date}"`,
+      `"${time}"`,
+      `"${b.status}"`
+    ].join(",");
+  });
+
+  // 3. Gabungkan Header dan Baris
+  const csvContent = "data:text/csv;charset=utf-8," 
+    + [headers.join(","), ...rows].join("\n");
+
+  // 4. Buat Link Download Palsu & Klik Secara Otomatis
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", `BarberX_Report_${new Date().toISOString().split('T')[0]}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
   /**
    * Menormalisasi format status dari backend untuk memastikan konsistensi logika frontend.
    */
