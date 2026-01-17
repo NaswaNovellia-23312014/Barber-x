@@ -325,38 +325,76 @@ export default function AdminDashboardPage() {
                     </tr>
                   ) : (
                     filteredBookings.map(b => (
-                      <tr key={b.id} className="bg-white hover:bg-gray-50/50 transition-colors">
-                        <td className="px-4 py-4 rounded-l-2xl border-y border-l border-gray-100">
-                          <div className="font-bold text-gray-900">{b.customerName}</div>
-                          <div className="text-[10px] text-gray-500 flex items-center gap-1 mt-1 font-medium">
-                            <Phone className="w-3 h-3"/> {b.customerPhone}
-                          </div>
-                        </td>
-                        <td className="px-4 py-4 border-y border-gray-100">
-                          <div className="text-sm font-bold text-indigo-600">{b.service?.name || 'Service Deleted'}</div>
-                          <div className="text-[10px] text-gray-400 mt-1 font-bold">
-                            {new Date(b.bookingTime).toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' })} • {new Date(b.bookingTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
-                          </div>
-                        </td>
-                        <td className="px-4 py-4 rounded-r-2xl border-y border-r border-gray-100 text-center">
-                          <select 
-                            value={normalizeStatus(b.status)}
-                            onChange={(e) => handleStatusChange(b.id, e.target.value)}
-                            className={`text-[10px] font-black px-3 py-2 rounded-full border-none ring-1 cursor-pointer outline-none transition-all
-                              ${normalizeStatus(b.status) === 'CONFIRMED' ? 'ring-green-500 bg-green-50 text-green-700' : 
-                                normalizeStatus(b.status) === 'PENDING' ? 'ring-yellow-500 bg-yellow-50 text-yellow-700' :
-                                normalizeStatus(b.status) === 'COMPLETED' ? 'ring-blue-500 bg-blue-50 text-blue-700' : 
-                                'ring-red-500 bg-red-50 text-red-700'}`}
-                          >
-                            <option value="PENDING">PENDING</option>
-                            <option value="CONFIRMED">CONFIRMED</option>
-                            <option value="COMPLETED">COMPLETED</option>
-                            <option value="CANCELLED">CANCELLED</option>
-                          </select>
-                        </td>
-                      </tr>
-                    ))
-                  )}
+        <tr key={b.id} className="group bg-white hover:bg-slate-50/80 transition-all duration-300">
+
+        {/* KOLOM CUSTOMER: Lebih Bersih & Professional */}
+        <td className="px-6 py-5 rounded-l-[24px] border-y border-l border-slate-100">
+          <div className="flex flex-col">
+            <span className="font-bold text-slate-800 text-base tracking-tight group-hover:text-indigo-600 transition-colors">
+              {b.customerName}
+            </span>
+            
+            <div className="flex flex-col gap-2 mt-2">
+              {/* Badge WhatsApp Premium */}
+              <a 
+                href={formatWhatsAppLink(b.customerPhone, b.customerName)}
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 w-fit px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full text-[10px] font-black uppercase tracking-wider hover:bg-emerald-600 hover:text-white hover:scale-105 transition-all active:scale-95 border border-emerald-100"
+              >
+                <MessageCircle size={12} className="opacity-80" />
+                Chat Customer
+              </a>
+              
+              <div className="flex items-center gap-1.5 text-slate-400 text-[11px] font-semibold ml-1">
+                <Phone size={10} className="text-slate-300" />
+                {b.customerPhone.replace(/\D/g, '').slice(0, 13)}
+              </div>
+            </div>
+          </div>
+        </td>
+
+        {/* KOLOM SERVICE: Modern Schedule Layout */}
+        <td className="px-6 py-5 border-y border-slate-100">
+          <div className="flex flex-col gap-1.5">
+            <div className="inline-flex items-center px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 text-[11px] font-bold w-fit">
+              {b.service?.name || 'Service Deleted'}
+                  </div>
+                  <div className="flex items-center gap-1.5 text-[10px] text-indigo-500 font-black uppercase tracking-widest mt-1">
+            <CalendarIcon size={12} />
+            
+            {/* TANGGAL: Mon, Jan 12 */}
+            {new Date(b.bookingTime).toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' })}
+            
+            <span className="text-slate-300 mx-1">|</span>
+            
+            {/* JAM: 05:00 PM */}
+            {new Date(b.bookingTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+          </div>
+          </div>
+        </td>
+
+        {/* KOLOM STATUS: Custom Select Design */}
+        <td className="px-6 py-5 rounded-r-[24px] border-y border-r border-slate-100 text-center">
+          <div className="relative inline-block w-full max-w-[140px]">
+            <select 
+              value={normalizeStatus(b.status)}
+              onChange={(e) => handleStatusChange(b.id, e.target.value)}
+              className={`appearance-none w-full text-[10px] font-black px-4 py-2.5 rounded-xl border-none ring-1 ring-inset cursor-pointer outline-none transition-all text-center
+                ${normalizeStatus(b.status) === 'CONFIRMED' ? 'ring-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100' : 
+                  normalizeStatus(b.status) === 'PENDING' ? 'ring-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100' :
+                  normalizeStatus(b.status) === 'COMPLETED' ? 'ring-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100' : 
+                  'ring-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100'}`}
+            >
+              <option value="PENDING">PENDING</option>
+              <option value="CONFIRMED">CONFIRMED</option>
+              <option value="COMPLETED">COMPLETED</option>
+              <option value="CANCELLED">CANCELLED</option>
+            </select>
+          </div>
+        </td>
+      </tr>
+    )))}
                 </tbody>
               </table>
             </div>
