@@ -12,7 +12,7 @@ import {
   Pencil, 
   Trash2, 
   Phone,
-  Calendar as CalendarIcon
+  MessageCircle,
 } from 'lucide-react';
 
 import { Booking, Service, User } from '@/types';
