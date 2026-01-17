@@ -336,6 +336,7 @@ export default function AdminDashboardPage() {
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* PANEL KIRI: TABEL PEMESANAN */}
+        <div className="lg:col-span-8 bg-white rounded-[32px] shadow-sm border border-slate-100 overflow-hidden flex flex-col">
   
   {/* HEADER TABLE: Tab Navigasi & Tombol Export */}
   <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 bg-slate-50/30">
