@@ -371,6 +371,42 @@ export default function AdminDashboardPage() {
         </span>
       </button>
     </div>
+
+    {/* Kanan: Tombol Export CSV */}
+    <div className="p-3 sm:pr-6 flex justify-end">
+      <button
+        onClick={handleExportCSV}
+        className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl text-[11px] font-bold uppercase tracking-wider hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200 transition-all active:scale-95 shadow-sm"
+      >
+        {/* Pastikan sudah import { Download } from 'lucide-react' di atas */}
+        <Download size={14} /> 
+        Export CSV
+      </button>
+    </div>
+  </div>
+
+  {/* BODY TABLE */}
+  <div className="p-6">
+    <div className="overflow-x-auto min-h-[400px]"> {/* min-h agar tidak gepeng saat kosong */}
+      <table className="w-full text-left border-separate border-spacing-y-3">
+        <thead>
+          <tr className="text-slate-400 text-[10px] font-black uppercase tracking-widest">
+            <th className="px-6 py-2 pl-6">Customer Details</th>
+            <th className="px-6 py-2">Service & Schedule</th>
+            <th className="px-6 py-2 text-center">Status Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredBookings.length === 0 ? (
+            <tr>
+              <td colSpan={3} className="text-center py-20 text-slate-400 italic text-sm">
+                <div className="flex flex-col items-center gap-2">
+                    <span className="bg-slate-50 p-4 rounded-full">🚫</span>
+                    <span>No bookings found in this section.</span>
+                </div>
+              </td>
+            </tr>
+          ) : (
                     filteredBookings.map(b => (
         <tr key={b.id} className="group bg-white hover:bg-slate-50/80 transition-all duration-300">
 
