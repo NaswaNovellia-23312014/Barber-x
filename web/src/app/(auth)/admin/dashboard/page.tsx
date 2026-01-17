@@ -340,25 +340,37 @@ export default function AdminDashboardPage() {
   
   {/* HEADER TABLE: Tab Navigasi & Tombol Export */}
   <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 bg-slate-50/30">
+    
+    {/* Kiri: Tab Buttons */}
+    <div className="flex w-full sm:w-auto">
+      <button 
+        onClick={() => setActiveTab('ACTIVE')}
+        className={`px-6 sm:px-8 py-5 text-xs font-black uppercase tracking-widest transition-all border-b-2 
+          ${activeTab === 'ACTIVE' 
+            ? 'text-indigo-600 border-indigo-600 bg-indigo-50/50' 
+            : 'text-slate-400 border-transparent hover:bg-slate-50 hover:text-slate-600'
+          }`}
+      >
+        Queue & Active 
+        <span className="ml-1.5 opacity-70">
+          ({bookings.filter(b => normalizeStatus(b.status) !== 'COMPLETED' && normalizeStatus(b.status) !== 'CANCELLED').length})
+        </span>
+      </button>
 
-          <div className="p-6">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-separate border-spacing-y-3">
-                <thead>
-                  <tr className="text-gray-400 text-[10px] font-black uppercase tracking-widest">
-                    <th className="px-4 py-2">Customer</th>
-                    <th className="px-4 py-2">Service & Schedule</th>
-                    <th className="px-4 py-2 text-center">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredBookings.length === 0 ? (
-                    <tr>
-                      <td colSpan={3} className="text-center py-20 text-gray-400 italic text-sm">
-                        No bookings found in this section.
-                      </td>
-                    </tr>
-                  ) : (
+      <button 
+        onClick={() => setActiveTab('COMPLETED')}
+        className={`px-6 sm:px-8 py-5 text-xs font-black uppercase tracking-widest transition-all border-b-2 
+          ${activeTab === 'COMPLETED' 
+            ? 'text-emerald-600 border-emerald-600 bg-emerald-50/50' 
+            : 'text-slate-400 border-transparent hover:bg-slate-50 hover:text-slate-600'
+          }`}
+      >
+        History 
+        <span className="ml-1.5 opacity-70">
+          ({stats.completed})
+        </span>
+      </button>
+    </div>
                     filteredBookings.map(b => (
         <tr key={b.id} className="group bg-white hover:bg-slate-50/80 transition-all duration-300">
 
