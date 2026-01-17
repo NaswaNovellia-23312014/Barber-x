@@ -112,7 +112,8 @@ export default function BookingForm({ services }: BookingFormProps) {
     };
 
     return (
-  <Card className="w-full max-w-xl mx-auto rounded-3xl shadow-2xl border-none">
+    <div className="pt-20 pb-12 px-4"> 
+    <Card className="w-full max-w-xl mx-auto rounded-3xl shadow-2xl border-none">
     
     {/* Header Card */}
     <CardHeader className="space-y-1 text-center">
@@ -147,24 +148,31 @@ export default function BookingForm({ services }: BookingFormProps) {
           />
         </div>
 
-        {/* Phone Number */}
-        <div className="space-y-1.5">
-          <Label
-            htmlFor="customerPhone"
-            className="text-[10px] font-black uppercase tracking-widest text-black ml-2"
-          >
-            Phone Number
-          </Label>
-          <Input
-            id="customerPhone"
-            type="text"
-            placeholder="e.g. 08123456789"
-            value={customerPhone}
-            onChange={(e) => setCustomerPhone(filterNomor(e.target.value))}
-            disabled={isLoading}
-            className="w-full px-5 py-6 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-black outline-none font-bold text-sm placeholder:text-gray-300"
-          />
-        </div>
+          {/* Phone Number */}
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="customerPhone"
+              className="text-[10px] font-black uppercase tracking-widest text-black ml-2"
+            >
+              Phone Number
+            </Label>
+            <div className="relative group">
+              {/* Penanda +62 di dalam input */}
+              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400 group-focus-within:text-black transition-colors">
+                +62
+              </span>
+              <Input
+                id="customerPhone"
+                type="text"
+                placeholder="8123456789" // Placeholder diubah tanpa '0'
+                value={customerPhone}
+                onChange={(e) => setCustomerPhone(filterNomor(e.target.value))}
+                disabled={isLoading}
+                // Tambahkan pl-14 agar teks input tidak menabrak +62
+                className="w-full pl-14 pr-5 py-6 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-black outline-none font-bold text-sm placeholder:text-gray-300"
+              />
+            </div>
+          </div>
 
         {/* Service */}
         <CustomServiceSelector
@@ -198,5 +206,6 @@ export default function BookingForm({ services }: BookingFormProps) {
       </form>
     </CardContent>
   </Card>
-);
+  </div>
+  );
 }
