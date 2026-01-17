@@ -169,74 +169,89 @@ export default function AdminDashboardPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] p-4 md:p-8 font-sans text-gray-900">
+    <div className="min-h-screen bg-slate-50 selection:bg-indigo-100 selection:text-indigo-900 font-sans pb-20">
+    
+    {/* Background Decoration */}
+    <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-indigo-50/40 to-slate-50/0" />
+    </div>
       
       {/* BAGIAN HEADER DASHBOARD */}
-      <header className="max-w-7xl mx-auto mb-10 px-4">
-        {/* Baris Utama */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          
-          <div className="flex items-center gap-4">
-            {/* Logo */}
-            <Image
-              src="/images/LogoBarberX.png"
-              alt="Barber-X Logo"
-              width={72}
-              height={72}
-              className="object-contain"
-              priority
-            />
+      <header className="max-w-7xl mx-auto mb-10 px-4 pt-6"> {/* Ditambah pt-6 agar tidak mepet atas */}
+        
+        {/* Container Header diberi Background Putih & Shadow agar "Pop-out" */}
+        <div className="bg-white/80 backdrop-blur-md border border-white/40 shadow-sm rounded-3xl p-6 md:p-8">
+            
+            {/* Baris Utama */}
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            
+            <div className="flex items-center gap-5">
+                {/* Logo dengan Shadow Halus */}
+                <div className="drop-shadow-md">
+                    <Image
+                    src="/images/LogoBarberX.png"
+                    alt="Barber-X Logo"
+                    width={64}
+                    height={64}
+                    className="object-contain"
+                    priority
+                    />
+                </div>
 
-            {/* Teks */}
-            <div className="flex flex-col">
-              <h1 className="text-2xl font-black tracking-tighter leading-tight">
-                BARBER-X ADMIN
-              </h1>
-              <p className="text-gray-500 text-sm italic">
-                Welcome back,{" "}
-                <span className="font-bold text-indigo-600">
-                  {user?.username}
-                </span>
-              </p>
+                {/* Teks */}
+                <div className="flex flex-col">
+                <h1 className="text-2xl font-black tracking-tight leading-none text-slate-900">
+                    BARBER-X <span className="text-indigo-600">ADMIN</span>
+                </h1>
+                <p className="text-slate-500 text-sm font-medium mt-1">
+                    Welcome back,{" "}
+                    <span className="font-bold text-slate-800">
+                    {user?.username}
+                    </span>
+                </p>
+                </div>
             </div>
-          </div>
 
-          {/* Kanan: Tombol Aksi */}
-          <div className="flex gap-2">
-            <button
-              onClick={() => {
-                setIsRefreshing(true);
-                loadData(false);
-              }}
-              className="p-2.5 bg-white border rounded-xl hover:bg-gray-50 transition shadow-sm active:scale-95"
-            >
-              <RefreshCw
-                className={`w-5 h-5 text-gray-600 ${
-                  isRefreshing ? "animate-spin" : ""
-                }`}
-              />
-            </button>
+            {/* Kanan: Tombol Aksi */}
+            <div className="flex gap-3">
+                <button
+                onClick={() => {
+                    setIsRefreshing(true);
+                    loadData(false);
+                }}
+                className="p-3 bg-white border border-slate-200 rounded-xl text-slate-600 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50 transition-all shadow-sm active:scale-95"
+                title="Refresh Data"
+                >
+                <RefreshCw
+                    className={`w-5 h-5 ${
+                    isRefreshing ? "animate-spin text-indigo-600" : ""
+                    }`}
+                />
+                </button>
 
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2.5 bg-red-50 text-red-600 rounded-xl font-bold hover:bg-red-100 transition border border-red-100 shadow-sm active:scale-95"
-            >
-              <LogOut className="w-4 h-4" />
-              Logout
-            </button>
-          </div>
-        </div>
+                <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-5 py-3 bg-white border border-rose-200 text-rose-600 rounded-xl font-bold text-sm hover:bg-rose-50 hover:border-rose-300 transition-all shadow-sm active:scale-95"
+                >
+                <LogOut className="w-4 h-4" />
+                Logout
+                </button>
+            </div>
+            </div>
 
-        {/* Tanggal */}
-        <div className="border-t mt-6 pt-4">
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-            {new Date().toLocaleDateString("en-US", {
-              weekday: "long",
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}
-          </span>
+            {/* Tanggal - Desain Divider yang lebih rapi */}
+            <div className="flex items-center gap-4 mt-6 pt-4 border-t border-slate-100">
+                <div className="h-2 w-2 rounded-full bg-indigo-500"></div>
+                <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400">
+                    {new Date().toLocaleDateString("en-US", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                    })}
+                </span>
+            </div>
+
         </div>
       </header>
 
