@@ -12,6 +12,7 @@ import {
   Pencil, 
   Trash2, 
   Phone,
+  Calendar as CalendarIcon,
   MessageCircle,
 } from 'lucide-react';
 
@@ -27,6 +28,7 @@ import {
 } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
 import Image from 'next/image';
+import { formatWhatsAppLink } from '@/lib/input-helpers';
 
 export default function AdminDashboardPage() {
   const router = useRouter();
