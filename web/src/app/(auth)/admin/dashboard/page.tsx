@@ -256,29 +256,34 @@ export default function AdminDashboardPage() {
       </header>
 
       {/* BAGIAN KARTU STATISTIK */}
-      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
-        <div className="bg-white p-8 rounded-[32px] shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-          <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-3">
+      {/* Container Statistik ditarik ke atas (negative margin) agar menumpuk header */}
+      <div className="relative z-20 max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10 -mt-6 px-4">
+        
+        {/* Card 1: Total - Aksen Biru */}
+        <div className="bg-white p-6 rounded-3xl shadow-xl shadow-slate-200/50 border-t-4 border-t-indigo-500 flex flex-col items-center justify-center text-center group hover:-translate-y-1 transition-transform duration-300">
+          <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
             <CalendarIcon className="w-6 h-6" />
           </div>
-          <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest">Total Bookings</p>
-          <h3 className="text-4xl font-black mt-1">{stats.total}</h3>
+          <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Total Bookings</p>
+          <h3 className="text-4xl font-black mt-1 text-slate-800">{stats.total}</h3>
         </div>
 
-        <div className="bg-white p-8 rounded-[32px] shadow-sm border border-yellow-100 ring-2 ring-yellow-500/5 flex flex-col items-center justify-center text-center">
-          <div className="w-12 h-12 bg-yellow-50 text-yellow-600 rounded-2xl flex items-center justify-center mb-3">
+        {/* Card 2: Pending - Aksen Kuning */}
+        <div className="bg-white p-6 rounded-3xl shadow-xl shadow-slate-200/50 border-t-4 border-t-amber-500 flex flex-col items-center justify-center text-center group hover:-translate-y-1 transition-transform duration-300">
+          <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
             <Clock className="w-6 h-6" />
           </div>
-          <p className="text-yellow-600 text-[10px] font-black uppercase tracking-widest">Pending Approval</p>
-          <h3 className="text-4xl font-black mt-1 text-yellow-600">{stats.pending}</h3>
+          <p className="text-amber-600/80 text-[10px] font-black uppercase tracking-widest">Pending Approval</p>
+          <h3 className="text-4xl font-black mt-1 text-amber-600">{stats.pending}</h3>
         </div>
 
-        <div className="bg-white p-8 rounded-[32px] shadow-sm border border-green-100 ring-2 ring-green-500/5 flex flex-col items-center justify-center text-center">
-          <div className="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center mb-3">
+        {/* Card 3: Completed - Aksen Hijau */}
+        <div className="bg-white p-6 rounded-3xl shadow-xl shadow-slate-200/50 border-t-4 border-t-emerald-500 flex flex-col items-center justify-center text-center group hover:-translate-y-1 transition-transform duration-300">
+          <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
             <CheckCircle2 className="w-6 h-6" />
           </div>
-          <p className="text-green-600 text-[10px] font-black uppercase tracking-widest">Services Completed</p>
-          <h3 className="text-4xl font-black mt-1 text-green-600">{stats.completed}</h3>
+          <p className="text-emerald-600/80 text-[10px] font-black uppercase tracking-widest">Services Completed</p>
+          <h3 className="text-4xl font-black mt-1 text-emerald-600">{stats.completed}</h3>
         </div>
       </div>
 
